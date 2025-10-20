@@ -31,7 +31,7 @@ public class Consola {
         do {
             // Manejo de Input Mismatch (si mete letra)
             while (!teclado.hasNextInt()) {
-                System.out.println("❌ ERROR: Entrada inválida. Por favor, ingrese un número entero.");
+                System.out.println("ERROR!!: Entrada inválida. Por favor, ingrese un número entero.");
                 teclado.next(); // Limpia la entrada no numérica
                 System.out.print("Seleccione una opción: "); // Vuelve a pedir
             }
@@ -42,7 +42,7 @@ public class Consola {
 
             // Validación de Rango
             if (opcion < min || opcion > max) {
-                System.out.println("❌ ERROR: Opción inválida. Debe ser entre " + min + " y " + max + ".");
+                System.out.println("ERROR!!: Opción inválida. Debe ser entre " + min + " y " + max + ".");
                 System.out.print("Seleccione una opción: ");
             }
 
@@ -59,7 +59,7 @@ public class Consola {
     public float pedirFloat(String mensaje) {
         System.out.print(mensaje);
         while (!teclado.hasNextFloat()) {
-            System.out.println("❌ ERROR: Entrada inválida. Por favor, ingrese un número decimal.");
+            System.out.println("ERROR!!: Entrada inválida. Por favor, ingrese un número decimal.");
             teclado.next();
             System.out.print(mensaje); 
         }
