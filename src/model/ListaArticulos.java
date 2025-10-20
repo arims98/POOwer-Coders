@@ -9,7 +9,7 @@ public class ListaArticulos {
     private List<Articulo> lista;
 
     //Constructor que inicializa la lista (estantería), como Array list vacía
-    public Lsita Articulos() {
+    public ListaArticulos() {
         this.lista = new ArrayList<>();
     }
 
@@ -30,7 +30,7 @@ public class ListaArticulos {
         //Recorremos la lista de artículos
         for (Articulo articulo : lista) {
             //Si el código del artículo coincide con el código buscado
-            if (articulo.getCodigo().equals(codigo)) {
+            if (String.valueOf(articulo.getCodigoArticulo()).equals(codigo)) {
                 //Devolvemos el artículo encontrado
                 return articulo;
             }

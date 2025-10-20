@@ -1,4 +1,4 @@
-//Creo la clase Cliente
+package model;
 
 public abstract class Cliente {
     private String nombre;

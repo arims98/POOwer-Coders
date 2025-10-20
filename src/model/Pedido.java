@@ -1,24 +1,30 @@
+package model;
+
 import java.time.LocalDateTime;
 
-// Clase Pedidos
+// Clase Pedido con estado como enum
 public class Pedido {
-    private String numeroPedido;
+
+    public enum Estado { PENDIENTE, ENVIADO }
+
+    private int numeroPedido;
     private Cliente cliente;
     private Articulo articulo;
     private int cantidad;
     private LocalDateTime fechaHora;
+    private Estado estado;
 
-    public Pedido(String numeroPedido, Cliente cliente, Articulo articulo, int cantidad, LocalDateTime fechaHora) {
-        this.numeroPedido = numeroPedido;
+    public Pedido(Cliente cliente, Articulo articulo, int cantidad, LocalDateTime fechaHora) {
         this.cliente = cliente;
         this.articulo = articulo;
         this.cantidad = cantidad;
         this.fechaHora = fechaHora;
+        this.estado = Estado.PENDIENTE;
     }
 
-    // Getters y setters de Pedidos
-    public String getNumeroPedido() { return numeroPedido; }
-    public void setNumeroPedido(String numeroPedido) { this.numeroPedido = numeroPedido; }
+    // Getters y setters
+    public int getNumeroPedido() { return numeroPedido; }
+    public void setNumeroPedido(int numeroPedido) { this.numeroPedido = numeroPedido; }
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
@@ -32,14 +38,18 @@ public class Pedido {
     public LocalDateTime getFechaHora() { return fechaHora; }
     public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
 
+    public Estado getEstado() { return estado; }
+    public void setEstado(Estado estado) { this.estado = estado; }
+
     @Override
     public String toString() {
         return "Pedido{" +
-                "numeroPedido='" + numeroPedido + '\'' +
+                "numeroPedido=" + numeroPedido +
                 ", cliente=" + cliente +
                 ", articulo=" + articulo +
                 ", cantidad=" + cantidad +
                 ", fechaHora=" + fechaHora +
+                ", estado=" + estado +
                 '}';
     }
 }

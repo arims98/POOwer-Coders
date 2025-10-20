@@ -1,4 +1,4 @@
-//Creo la clase Artículo
+package model;
 
 public class Articulo {
     private int codigoArticulo;

@@ -1,4 +1,4 @@
-//Creo subclase ClientePremium que hereda de Cliente
+package model;
 
 public class ClientePremium extends Cliente{
     private final int cuotaAnual = 30;     //Cuota que paga el cliente premium

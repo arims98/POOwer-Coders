@@ -1,4 +1,4 @@
-//Creo subclase ClienteEstandar que hereda de Cliente
+package model;
 
 public class ClienteEstandar extends Cliente {
 
