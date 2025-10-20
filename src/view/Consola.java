@@ -2,7 +2,7 @@ package view;
 
 import java.util.Scanner;
 import java.util.List;
-// Importamos las clases del Modelo para poder mostrar sus listas
+// Importamos las clases de moedel para poder mostrar sus listas
 import model.Cliente; 
 import model.Articulo; 
 import model.Pedido;
@@ -15,23 +15,22 @@ public class Consola {
         teclado = new Scanner(System.in);
     }
     
-    // ---------------------------------------------
-    // MÉTODOS DE LECTURA (ROBUSTOS)
-    // ---------------------------------------------
+
+    // MÉTODOS DE LECTURA
     
     /**
-     * Solicita un entero al usuario, asegurando que es numérico y está en el rango [min, max].
+     * Pide un valor entero al usuario, asegurando que es numérico y está en el rango [min, max].
      * @param min Valor mínimo permitido
      * @param max Valor máximo permitido
      * @return La opción válida seleccionada por el usuario.
      */
-    private int pedirIntRobusto(int min, int max) {
+    private int pedirInt(int min, int max) {
         int opcion = -1;
         
         do {
-            // Manejo de Input Mismatch (si mete letra)
+            // Validación de los datos introducidos
             while (!teclado.hasNextInt()) {
-                System.out.println("ERROR!!: Entrada inválida. Por favor, ingrese un número entero.");
+                System.out.println("ERROR!!: Entrada inválida. Por favor, inserte un número entero.");
                 teclado.next(); // Limpia la entrada no numérica
                 System.out.print("Seleccione una opción: "); // Vuelve a pedir
             }
@@ -68,28 +67,28 @@ public class Consola {
         return valor;
     }
 
-    // ---------------------------------------------
-    // MÉTODOS DE MENÚS (USAN pedirIntRobusto)
-    // ---------------------------------------------
+
+    // MÉTODOS DE MENÚS
+   
 
     public int menuPrincipal() {
         System.out.println("\n----- MENÚ PRINCIPAL -----");
         System.out.println("1. Gestionar Artículos");
         System.out.println("2. Gestionar Clientes");
         System.out.println("3. Gestionar Pedidos");
-        System.out.println("0. Salir"); // Cambiamos 4 a 0 para seguir el estándar
+        System.out.println("0. Salir"); 
         System.out.print("Seleccione una opción: ");
-        // Usamos el método robusto, esperando opciones entre 0 y 3
-        return pedirIntRobusto(0, 3); 
+        // Opciones entre 0 y 3
+        return pedirInt(0, 3); 
     }
 
     public int menuArticulos() {
         System.out.println("\n----- GESTIÓN DE ARTÍCULOS -----");
         System.out.println("1. Añadir artículo");
         System.out.println("2. Mostrar artículos");
-        System.out.println("0. Volver al menú principal"); // Eliminé 3 y 4 para simplificar el flujo
+        System.out.println("0. Volver al menú principal");
         System.out.print("Seleccione una opción: ");
-        return pedirIntRobusto(0, 2);
+        return pedirInt(0, 2);
     }
     
     public int menuClientes() {
@@ -100,7 +99,7 @@ public class Consola {
         System.out.println("4. Mostrar Clientes Premium");
         System.out.println("0. Volver al menú principal");
         System.out.print("Seleccione una opción: ");
-        return pedirIntRobusto(0, 4);
+        return pedirInt(0, 4);
     }
 
     public int menuPedidos() {
@@ -109,21 +108,20 @@ public class Consola {
         System.out.println("2. Eliminar pedido");
         System.out.println("3. Mostrar pedidos pendientes");
         System.out.println("4. Mostrar pedidos enviados");
-        System.out.println("0. Volver al menú principal"); // Simplifiqué las opciones para coincidir con la lógica
+        System.out.println("0. Volver al menú principal");
         System.out.print("Seleccione una opción: ");
-        return pedirIntRobusto(0, 4);
+        return pedirInt(0, 4);
     }
 
-    // ---------------------------------------------
-    // MÉTODOS DE VISUALIZACIÓN
-    // ---------------------------------------------
 
+    // MÉTODOS DE VISUALIZACIÓN
+    
     public void mostrarMensaje(String mensaje) {
         System.out.println(mensaje);
     }
     
     /**
-     * Muestra el contenido de cualquier lista de objetos (usa toString() de cada objeto).
+     * Muestra el contenido de cualquier lista de objetos (usa el toString() de cada objeto).
      */
     public <T> void mostrarLista(List<T> lista) {
         if (lista == null || lista.isEmpty()) {
