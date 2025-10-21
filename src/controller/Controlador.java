@@ -46,7 +46,7 @@ public class Controlador {
                     menuGestionPedidos();
                     break;
                 case 4: 
-                    vista.mostrarMensaje("¡Gracias por visitar Online Store! 👋");
+                    vista.mostrarMensaje("¡Gracias por visitar Online Store!");
                     break;
                 default:
                     vista.mostrarMensaje("Opción no válida. Intente de nuevo.");
