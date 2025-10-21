@@ -24,6 +24,18 @@ public class Consola {
      * @param max Valor máximo permitido
      * @return La opción válida seleccionada por el usuario.
      */
+    public int pedirInt(String mensaje) {
+        System.out.print(mensaje);
+        while (!teclado.hasNextInt()) {
+            System.out.println("ERROR!!: Entrada inválida. Por favor, ingrese un número entero.");
+            teclado.next();
+            System.out.print(mensaje);
+        }
+        int valor = teclado.nextInt();
+        teclado.nextLine();
+        return valor;
+    }
+
     private int pedirInt(int min, int max) {
         int opcion = -1;
         
@@ -76,10 +88,10 @@ public class Consola {
         System.out.println("1. Gestionar Artículos");
         System.out.println("2. Gestionar Clientes");
         System.out.println("3. Gestionar Pedidos");
-        System.out.println("0. Salir"); 
+        System.out.println("4. Salir"); 
         System.out.print("Seleccione una opción: ");
-        // Opciones entre 0 y 3
-        return pedirInt(0, 3); 
+        // Opciones entre 1 y 4
+        return pedirInt(1, 4); 
     }
 
     public int menuArticulos() {
