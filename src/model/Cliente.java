@@ -6,11 +6,12 @@ public abstract class Cliente {
     private String email;
     private String nif;
 
-    public Cliente(String nombre, String domicilio, String email, String nif) {
+    // Constructor esperado por las subclases: (nombre, domicilio, nif, email)
+    public Cliente(String nombre, String domicilio, String nif, String email) {
         this.nombre = nombre;
         this.domicilio = domicilio;
-        this.email = email;
         this.nif = nif;
+        this.email = email;
     }
 //Creo Getters y Setters
 
