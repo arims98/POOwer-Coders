@@ -1,0 +1,10 @@
+# Ignorar archivos compilados
+bin/
+
+# Ignorar archivos temporales de sistema/IDEs
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs
+*.log
