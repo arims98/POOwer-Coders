@@ -19,6 +19,8 @@ public class Controlador {
         // Inicialización del Modelo y la Vista
         this.datos = new Datos();
         this.vista = new Consola();
+        // Precargar datos de demostración para facilitar las pruebas
+        this.datos.cargarDatosDemo();
     }
 
     public static void main(String[] args) {
