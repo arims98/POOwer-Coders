@@ -19,9 +19,10 @@ public class ClientePremium extends Cliente{
 
     @Override
     public String toString() {
-        return super.toString().replace("}","") +
-                ", cuotaAnual=" + cuotaAnual +
-                ", descuentoEnvio=" + descuentoEnvio +
-                '}';
+    return super.toString().replace("}","") +
+        ", tipo=Premium" +
+        ", cuotaAnual=" + cuotaAnual +
+        ", descuentoEnvio=" + descuentoEnvio +
+        '}';
     }
 }

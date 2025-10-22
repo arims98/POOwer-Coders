@@ -148,4 +148,19 @@ public class Consola {
         }
         System.out.println("-------------------------------------");
     }
+
+    /**
+     * Variante con título explícito para controlar el encabezado del listado.
+     */
+    public <T> void mostrarLista(String titulo, List<T> lista) {
+        if (lista == null || lista.isEmpty()) {
+            System.out.println("--- La lista está vacía ---");
+            return;
+        }
+        System.out.println("\n--- " + titulo + " ---");
+        for (T elemento : lista) {
+            System.out.println(elemento.toString());
+        }
+        System.out.println("-------------------------------------");
+    }
 }

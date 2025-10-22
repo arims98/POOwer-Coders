@@ -67,7 +67,7 @@ public class Controlador {
             switch (opcion) {
                 case 1: anadirArticulo(); break; 
                 case 2: 
-                    vista.mostrarLista(datos.getListaArticulos().getLista());
+                    vista.mostrarLista("ARTÍCULOS", datos.getListaArticulos().getLista());
                     break;
                 case 0: vista.mostrarMensaje("Volviendo al menú principal."); break;
                 default: vista.mostrarMensaje("Opción no válida.");
@@ -83,13 +83,13 @@ public class Controlador {
             switch (opcion) {
                 case 1: anadirCliente(); break;
                 case 2: 
-                    vista.mostrarLista(datos.getListaClientes().getLista());
+                    vista.mostrarLista("CLIENTES", datos.getListaClientes().getLista());
                     break;
                 case 3: 
-                    vista.mostrarLista(datos.getListaClientes().getClientesEstandar());
+                    vista.mostrarLista("CLIENTES ESTÁNDAR", datos.getListaClientes().getClientesEstandar());
                     break;
                 case 4: 
-                    vista.mostrarLista(datos.getListaClientes().getClientesPremium());
+                    vista.mostrarLista("CLIENTES PREMIUM", datos.getListaClientes().getClientesPremium());
                     break;
                 case 0: vista.mostrarMensaje("Volviendo al menú principal."); break;
                 default: vista.mostrarMensaje("Opción no válida.");
@@ -106,10 +106,10 @@ public class Controlador {
                 case 1: anadirPedido(); break;
                 case 2: eliminarPedido(); break;
                 case 3: 
-                    vista.mostrarLista(datos.getListaPedidos().getPedidosPendientes()); 
+                    vista.mostrarLista("PEDIDOS PENDIENTES", datos.getListaPedidos().getPedidosPendientes()); 
                     break;
                 case 4: 
-                    vista.mostrarLista(datos.getListaPedidos().getPedidosEnviados()); 
+                    vista.mostrarLista("PEDIDOS ENVIADOS", datos.getListaPedidos().getPedidosEnviados()); 
                     break;
                 case 0: vista.mostrarMensaje("Volviendo al menú principal."); break;
                 default: vista.mostrarMensaje("Opción no válida.");
