@@ -50,7 +50,7 @@ class PedidoControladorTest {
     void testCrearPedidoCorrecto() throws Exception {
         Cliente cliente = new ClienteEstandar("Paco Lopez", "Calle Galaxia 12", "456789123F", "pacol@uoc.edu");
         Articulo articulo = new Articulo("A05", "Tablet", 150, 7, 3);
-        this.controlador.crearPedido("P05", cliente, articulo, 0);
+        this.controlador.crearPedido("P05", cliente, articulo, 2);
         Assertions.assertEquals(5, this.controlador.listarPedidos().size()); // Comprobamos que hay 5 pedidos
         // Verificamos que el último pedido creado tiene el número correcto
         Assertions.assertEquals("P05", ((Pedido)this.controlador.listarPedidos().get(4)).getNumeroPedido());
