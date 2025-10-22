@@ -84,6 +84,8 @@ public class Consola {
    
 
     public int menuPrincipal() {
+        System.out.println("\n");
+        System.out.println("¡BIENVENIDO A LA ONLINE STORE DE POOWER CODERS!");
         System.out.println("\n----- MENÚ PRINCIPAL -----");
         System.out.println("1. Gestionar Artículos");
         System.out.println("2. Gestionar Clientes");
