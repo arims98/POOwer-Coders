@@ -1,5 +1,5 @@
-package vista;
 
+import vista.Consola;
 import controlador.Controlador;
 import modelo.Datos;
 
