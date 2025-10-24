@@ -28,3 +28,11 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# Ignore compiled Java class files
+*.class
+
+# Common build folders (redundant entries safe)
+bin/
+build/
+out/
