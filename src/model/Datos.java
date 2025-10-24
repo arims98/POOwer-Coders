@@ -36,10 +36,7 @@ public class Datos {
     }
 
     // --- CARGA DE DATOS DE DEMOSTRACIÓN ---
-    /**
-     * Inserta algunos registros de ejemplo para poder navegar por los menús
-     * sin tener que introducir datos manualmente cada vez.
-     */
+    
     public void cargarDatosDemo() {
         // Artículos
         Articulo a1 = new Articulo(1001, "Auriculares Bluetooth", 29.99f, 3.90f, 10);
