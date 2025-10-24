@@ -19,16 +19,22 @@ public class MenuPrincipal {
             switch (opcion) {
                 case 2:
                     getArticulos();
+                    break;
                 case 3:
                     addCliente();
+                    break;
                 case 4:
                     addArticulo();
+                    break;
                 case 5:
                     addPedido();
+                    break;
                 case 6:
                     System.out.println("Saliendo del programa...");
-                case 7:
+                    break;
+                default:
                     System.out.println("OPCIÓN NO VALIDA.");
+                    break;
 
             }
             System.out.println();
@@ -59,6 +65,7 @@ public class MenuPrincipal {
 
 
 
+
     }
     private static void addCliente() {
         System.out.println("===============NUEVO CLIENTE=============");
@@ -73,6 +80,8 @@ public class MenuPrincipal {
         } else {
             System.out.println("YA EXISTE UN CLIENTE CON ESTE EMAIL!");
         }
+        System.out.println("Pulse ENTER para volver al menú...");
+        sc.nextLine();
 
     }
     //============================================================================
@@ -83,6 +92,8 @@ public class MenuPrincipal {
         for (Articulo articulo : controller.listarArticulos()) {
             System.out.println(articulo);
         }
+        System.out.println("Pulse ENTER para volver al menú...");
+        sc.nextLine();
     }
     private static void addArticulo() {
         System.out.println("===============NUEVO ARTICULO=============");
@@ -94,6 +105,9 @@ public class MenuPrincipal {
 
         controller.addArticulo(codigo, descripcion, precioVenta, gastosEnvio, tiempoPreparacion);
         System.out.println("Articulo añadido correctamente.");
+
+        System.out.println("Pulse ENTER para volver al menú...");
+        sc.nextLine();
     }
     //============================================================================
     // PEDIDOS
@@ -110,6 +124,8 @@ public class MenuPrincipal {
         } catch (ClienteNoExiste | ArticuloNoExiste e)  {
             System.out.println("Error" + e.getMessage());
         }
+        System.out.println("Pulse ENTER para volver al menú...");
+        sc.nextLine();
     }
     //============================================================================
     // METODOS AUXILIARES
