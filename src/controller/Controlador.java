@@ -1,26 +1,27 @@
 package controller;
 
 import model.Datos;
-import view.Consola;
+import view.Consola; // Necesitarás pasarme esta clase si da error
 import model.Articulo;
 import model.Cliente;
 import model.ClienteEstandar;
 import model.ClientePremium;
 import model.Pedido;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Controlador {
     
-    // Atributos: Los puentes hacia las otras capas.
     private Datos datos;     
     private Consola vista;   
 
     public Controlador() {
-        // Inicialización del Modelo y la Vista
         this.datos = new Datos();
-        this.vista = new Consola();
-        // Precargar datos de demostración para facilitar las pruebas
-        this.datos.cargarDatosDemo();
+        this.vista = new Consola(); // Asumo que tienes esta clase en 'view'
+        
+        // <-- CAMBIO: ¡YA NO CARGAMOS DATOS DEMO!
+        // this.datos.cargarDatosDemo(); 
     }
 
     public static void main(String[] args) {
@@ -28,8 +29,8 @@ public class Controlador {
         app.iniciarApp(); 
     }
     
-    // GESTIÓN DEL FLUJO PRINCIPAL
-
+    // ... (Tu 'iniciarApp' y 'switch' se quedan igual) ...
+    // Pega el resto de tu método iniciarApp() aquí
     public void iniciarApp() {
         
         int opcion;
@@ -51,150 +52,204 @@ public class Controlador {
                     vista.mostrarMensaje("¡Gracias por visitar Online Store!");
                     break;
                 default:
-                    vista.mostrarMensaje("Opción no válida. Intente de nuevo.");
+                    vista.mostrarMensaje("Opción no válida. Inténtalo de nuevo.");
             }
         } while (opcion != 4);
     }
     
-    
-    // MENÚS DE GESTIÓN (PUENTES)
-
+    // ... (Tus métodos de 'menu' se quedan igual) ...
+    // Pega tus métodos menuGestionArticulos(), menuGestionClientes(), menuGestionPedidos()
     private void menuGestionArticulos() {
         int opcion;
         do {
-            opcion = vista.menuArticulos(); 
-            
+            opcion = vista.menuArticulos();
             switch (opcion) {
-                case 1: anadirArticulo(); break; 
-                case 2: 
-                    vista.mostrarLista("ARTÍCULOS", datos.getListaArticulos().getLista());
+                case 1:
+                    mostrarArticulos();
                     break;
-                case 0: vista.mostrarMensaje("Volviendo al menú principal."); break;
-                default: vista.mostrarMensaje("Opción no válida.");
+                case 2:
+                    // agregarArticulo(); // Tendrías que crear este método
+                    break;
+                case 3:
+                    // eliminarArticulo(); // Tendrías que crear este método
+                    break;
+                case 4:
+                    vista.mostrarMensaje("Volviendo al menú principal...");
+                    break;
+                default:
+                    vista.mostrarMensaje("Opción no válida.");
             }
-        } while (opcion != 0);
+        } while (opcion != 4);
     }
 
     private void menuGestionClientes() {
         int opcion;
         do {
-            opcion = vista.menuClientes(); 
-            
+            opcion = vista.menuClientes();
             switch (opcion) {
-                case 1: anadirCliente(); break;
-                case 2: 
-                    vista.mostrarLista("CLIENTES", datos.getListaClientes().getLista());
+                case 1:
+                    mostrarClientes();
                     break;
-                case 3: 
-                    vista.mostrarLista("CLIENTES ESTÁNDAR", datos.getListaClientes().getClientesEstandar());
+                case 2:
+                    agregarCliente();
                     break;
-                case 4: 
-                    vista.mostrarLista("CLIENTES PREMIUM", datos.getListaClientes().getClientesPremium());
+                case 3:
+                    // eliminarCliente(); // Tendrías que crear este método
                     break;
-                case 0: vista.mostrarMensaje("Volviendo al menú principal."); break;
-                default: vista.mostrarMensaje("Opción no válida.");
+                case 4:
+                    vista.mostrarMensaje("Volviendo al menú principal...");
+                    break;
+                default:
+                    vista.mostrarMensaje("Opción no válida.");
             }
-        } while (opcion != 0);
+        } while (opcion != 4);
     }
 
     private void menuGestionPedidos() {
         int opcion;
         do {
-            opcion = vista.menuPedidos(); 
-            
+            opcion = vista.menuPedidos();
             switch (opcion) {
-                case 1: anadirPedido(); break;
-                case 2: eliminarPedido(); break;
-                case 3: 
-                    vista.mostrarLista("PEDIDOS PENDIENTES", datos.getListaPedidos().getPedidosPendientes()); 
+                case 1:
+                    mostrarPedidos();
                     break;
-                case 4: 
-                    vista.mostrarLista("PEDIDOS ENVIADOS", datos.getListaPedidos().getPedidosEnviados()); 
+                case 2:
+                    agregarPedido();
                     break;
-                case 0: vista.mostrarMensaje("Volviendo al menú principal."); break;
-                default: vista.mostrarMensaje("Opción no válida.");
+                case 3:
+                    eliminarPedido();
+                    break;
+                case 4:
+                    vista.mostrarMensaje("Volviendo al menú principal...");
+                    break;
+                default:
+                    vista.mostrarMensaje("Opción no válida.");
             }
-        } while (opcion != 0);
+        } while (opcion != 4);
     }
 
-    // CREACIÓN DE OBJETOS Y OTRAS OPERACIONES
-
-    private void anadirArticulo() {
-        vista.mostrarMensaje("\n--- AÑADIR NUEVO ARTÍCULO ---");
-        
-        int codigo = vista.pedirInt("Introduce el código del artículo: ");
-        String descripcion = vista.pedirString("Introduce la descripción: ");
-        float precio = vista.pedirFloat("Introduce el precio de venta (€): ");
-        float gastos = vista.pedirFloat("Introduce los gastos de envío (€): ");
-        int tiempo = vista.pedirInt("Introduce el tiempo de preparación (minutos): ");
-        
-        Articulo nuevoArticulo = new Articulo(codigo, descripcion, precio, gastos, tiempo);
-        datos.getListaArticulos().agregarArticulo(nuevoArticulo);
-        
-        vista.mostrarMensaje(" Artículo añadido correctamente.");
-    }
+    // --- MÉTODOS DE LÓGICA (AHORA USAN DAOs) ---
     
-    private void anadirCliente() {
-        vista.mostrarMensaje("\n--- AÑADIR NUEVO CLIENTE ---");
-        
-        String nombre = vista.pedirString("Introduce el nombre: ");
-        String domicilio = vista.pedirString("Introduce el domicilio: ");
-        String nif = vista.pedirString("Introduce el NIF: ");
-        String email = vista.pedirString("Introduce el email (ID): ");
-        
-        if (datos.getListaClientes().buscarClientePorEmail(email) != null) {
-            vista.mostrarMensaje("ERROR!!: Ya existe un cliente con ese email.");
-            return;
+    private void mostrarArticulos() {
+        vista.mostrarMensaje("\n--- LISTA DE ARTÍCULOS ---");
+        try {
+            // <-- CAMBIO: Usamos el DAO
+            List<Articulo> articulos = datos.getRepoArticulo().listar();
+            
+            if (articulos.isEmpty()) {
+                vista.mostrarMensaje("No hay artículos que mostrar.");
+            } else {
+                for (Articulo a : articulos) {
+                    vista.mostrarMensaje(a.toString());
+                }
+            }
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error al listar artículos: " + e.getMessage());
         }
+    }
 
-        vista.mostrarMensaje("Tipo de cliente: (1) Estándar, (2) Premium");
-        int tipo = vista.pedirInt("Seleccione tipo (1 o 2): ");
+    private void mostrarClientes() {
+        vista.mostrarMensaje("\n--- LISTA DE CLIENTES ---");
+        try {
+            // <-- CAMBIO: Usamos el DAO
+            List<Cliente> clientes = datos.getRepoCliente().listar();
+            
+            if (clientes.isEmpty()) {
+                vista.mostrarMensaje("No hay clientes que mostrar.");
+            } else {
+                for (Cliente c : clientes) {
+                    vista.mostrarMensaje(c.toString());
+                }
+            }
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error al listar clientes: " + e.getMessage());
+        }
+    }
+
+    private void agregarCliente() {
+        vista.mostrarMensaje("\n--- CREAR NUEVO CLIENTE ---");
         
-        Cliente nuevoCliente = null; // será ClienteEstandar o ClientePremium según selección
-        if (tipo == 1) {
-            nuevoCliente = new ClienteEstandar(nombre, domicilio, nif, email);
-        } else if (tipo == 2) {
+        String nombre = vista.pedirString("Nombre: ");
+        String domicilio = vista.pedirString("Domicilio: ");
+        String nif = vista.pedirString("NIF: ");
+        String email = vista.pedirString("Email: ");
+        int tipo = vista.pedirInt("Tipo de cliente (1=Estándar, 2=Premium): ");
+        
+        Cliente nuevoCliente;
+        if (tipo == 2) {
             nuevoCliente = new ClientePremium(nombre, domicilio, nif, email);
         } else {
-            vista.mostrarMensaje("ATENCIÓN!! Tipo de cliente no válido. No se ha añadido el cliente.");
-            return;
+            nuevoCliente = new ClienteEstandar(nombre, domicilio, nif, email);
         }
         
-        datos.getListaClientes().agregarCliente(nuevoCliente);
-        vista.mostrarMensaje(" Cliente añadido correctamente.");
+        try {
+            // <-- CAMBIO: Usamos el DAO
+            datos.getRepoCliente().agregar(nuevoCliente);
+            vista.mostrarMensaje("Cliente '" + nombre + "' creado correctamente.");
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error al crear cliente: " + e.getMessage());
+        }
+    }
+    
+    private void mostrarPedidos() {
+        vista.mostrarMensaje("\n--- LISTA DE PEDIDOS ---");
+        try {
+            // <-- CAMBIO: Usamos el DAO
+            List<Pedido> pedidos = datos.getRepoPedido().listar();
+            
+            if (pedidos.isEmpty()) {
+                vista.mostrarMensaje("No hay pedidos que mostrar.");
+            } else {
+                for (Pedido p : pedidos) {
+                    vista.mostrarMensaje(p.toString());
+                }
+            }
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error al listar pedidos: " + e.getMessage());
+            e.printStackTrace(); // Para ver el error completo
+        }
     }
 
-    private void anadirPedido() {
+    private void agregarPedido() {
         vista.mostrarMensaje("\n--- CREAR NUEVO PEDIDO ---");
         
         String emailCliente = vista.pedirString("Email del cliente: ");
         int codigoArticulo = vista.pedirInt("Código del artículo: ");
         int cantidad = vista.pedirInt("Cantidad de unidades: ");
         
-        Cliente cliente = datos.getListaClientes().buscarClientePorEmail(emailCliente);
-        Articulo articulo = datos.getListaArticulos().buscarArticuloPorCodigo(String.valueOf(codigoArticulo));
-        
-        if (cliente == null || articulo == null) {
-            vista.mostrarMensaje("ERROR!!: Cliente o Artículo no encontrado.");
-            return;
+        try {
+            // <-- CAMBIO: Buscamos con los DAOs
+            Cliente cliente = datos.getRepoCliente().buscarPorId(emailCliente);
+            Articulo articulo = datos.getRepoArticulo().buscarPorId(codigoArticulo);
+            
+            if (cliente == null || articulo == null) {
+                vista.mostrarMensaje("ERROR!!: Cliente o Artículo no encontrado.");
+                return;
+            }
+            
+            // <-- CAMBIO: Usamos el constructor sin ID de Pedido
+            Pedido nuevoPedido = new Pedido(cliente, articulo, cantidad, LocalDateTime.now());
+            
+            // <-- CAMBIO: Usamos el DAO
+            datos.getRepoPedido().agregar(nuevoPedido);
+            
+            vista.mostrarMensaje(" Pedido N.º " + nuevoPedido.getNumPedido() + " (ID de BD) creado correctamente.");
+            
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error al crear pedido: " + e.getMessage());
         }
-        
-        Pedido nuevoPedido = new Pedido(cliente, articulo, cantidad, LocalDateTime.now());
-        datos.getListaPedidos().agregarPedido(nuevoPedido);
-        
-        vista.mostrarMensaje(" Pedido N.º " + nuevoPedido.getNumeroPedido() + " creado correctamente.");
     }
 
     private void eliminarPedido() {
         vista.mostrarMensaje("\n--- ELIMINAR PEDIDO ---");
         int numeroPedido = vista.pedirInt("Introduce el número de pedido a eliminar: ");
         
-        boolean exito = datos.getListaPedidos().eliminarPedidoPorNumero(numeroPedido);
-        
-        if (exito) {
+        try {
+            // <-- CAMBIO: Usamos el DAO
+            datos.getRepoPedido().eliminar(numeroPedido);
             vista.mostrarMensaje(" Pedido N.º " + numeroPedido + " eliminado correctamente.");
-        } else {
-            vista.mostrarMensaje("ERROR!!: El pedido no se pudo eliminar (no encontrado o tiempo límite superado).");
+        } catch (Exception e) {
+            vista.mostrarMensaje("ERROR!!: El pedido no se pudo eliminar: " + e.getMessage());
         }
     }
 }

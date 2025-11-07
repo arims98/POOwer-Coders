@@ -2,10 +2,6 @@ package view;
 
 import java.util.Scanner;
 import java.util.List;
-// Importamos las clases de moedel para poder mostrar sus listas
-import model.Cliente; 
-import model.Articulo; 
-import model.Pedido;
 
 public class Consola {
     
