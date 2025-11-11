@@ -31,5 +31,5 @@ public class Datos {
     }
     
     // El método cargarDatosDemo() ya no es necesario
-    // porque los datos ya están en tu base de datos (los INSERTs del script SQL).
+    // porque los datos ya están en la base de datos (los INSERTs del script SQL).
 }
