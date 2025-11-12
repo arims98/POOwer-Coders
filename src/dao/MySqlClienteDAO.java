@@ -5,10 +5,12 @@ import model.ClienteEstandar;
 import model.ClientePremium;
 import util.ConexionBD;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,6 +210,111 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
         } catch (SQLException e) {
             // Fallará si el cliente tiene pedidos (por la FOREIGN KEY)
             throw new Exception("Error al eliminar cliente: " + e.getMessage(), e);
+        } finally {
+            ConexionBD.cerrar(ps);
+            ConexionBD.cerrar(conn);
+        }
+    }
+    
+    // =====================================================
+    // MÉTODOS QUE USAN PROCEDIMIENTOS ALMACENADOS
+    // =====================================================
+    
+    /**
+     * OBTIENE ESTADÍSTICAS DE UN CLIENTE USANDO PROCEDIMIENTO ALMACENADO.
+     * 
+     * ¿Qué hace?: Llama al procedimiento sp_obtener_estadisticas_cliente
+     * ¿Por qué usarlo?: Centraliza la lógica de estadísticas en la BD
+     * 
+     * @param email Email del cliente
+     * @return Array con [totalPedidos, gastoTotal] (como String el gasto)
+     * @throws Exception si algo falla
+     */
+    public String obtenerEstadisticasCliente(String email) throws Exception {
+        // CALL sp_obtener_estadisticas_cliente(?, ?, ?, ?, ?)
+        String sql = "{CALL sp_obtener_estadisticas_cliente(?, ?, ?, ?, ?)}";
+        
+        Connection conn = null;
+        CallableStatement cs = null;
+        
+        try {
+            conn = ConexionBD.getConexion();
+            cs = conn.prepareCall(sql);
+            
+            // Parámetro de ENTRADA (IN)
+            cs.setString(1, email);
+            
+            // Parámetros de SALIDA (OUT)
+            cs.registerOutParameter(2, Types.INTEGER);   // p_total_pedidos
+            cs.registerOutParameter(3, Types.DECIMAL);   // p_gasto_total
+            cs.registerOutParameter(4, Types.VARCHAR);   // p_tipo_cliente
+            cs.registerOutParameter(5, Types.VARCHAR);   // p_mensaje
+            
+            // Ejecutar
+            cs.execute();
+            
+            // Leer resultados
+            int totalPedidos = cs.getInt(2);
+            double gastoTotal = cs.getDouble(3);
+            String tipoCliente = cs.getString(4);
+            // String mensaje = cs.getString(5);  // Opcional: mensaje del procedimiento
+            
+            // Mostrar información
+            System.out.println("\n📊 ESTADÍSTICAS DEL CLIENTE");
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            System.out.println("Email: " + email);
+            System.out.println("Tipo: " + tipoCliente);
+            System.out.println("Total de pedidos: " + totalPedidos);
+            System.out.println("Gasto total: " + gastoTotal + "€");
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+            
+            return String.format("Pedidos: %d, Gasto: %.2f€, Tipo: %s", 
+                               totalPedidos, gastoTotal, tipoCliente);
+            
+        } catch (SQLException e) {
+            throw new Exception("Error al obtener estadísticas: " + e.getMessage(), e);
+        } finally {
+            ConexionBD.cerrar(cs);
+            ConexionBD.cerrar(conn);
+        }
+    }
+    
+    /**
+     * ACTUALIZA un cliente existente en la base de datos.
+     * 
+     * ¿Qué actualiza?: Nombre, domicilio y NIF
+     * ¿Qué NO actualiza?: El email (PRIMARY KEY) ni el tipo de cliente
+     * 
+     * NOTA: Para cambiar de Estándar a Premium (o viceversa), 
+     * sería necesario otra lógica más compleja con transacciones.
+     */
+    @Override
+    public void actualizar(Cliente cliente) throws Exception {
+        String sql = "UPDATE Cliente SET nombre = ?, domicilio = ?, nif = ? WHERE email = ?";
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        
+        try {
+            conn = ConexionBD.getConexion();
+            ps = conn.prepareStatement(sql);
+            
+            // Asignamos los nuevos valores
+            ps.setString(1, cliente.getNombre());
+            ps.setString(2, cliente.getDomicilio());
+            ps.setString(3, cliente.getNif());
+            ps.setString(4, cliente.getEmail());  // WHERE (el ID)
+            
+            int filasActualizadas = ps.executeUpdate();
+            
+            if (filasActualizadas == 0) {
+                throw new Exception("No se encontró el cliente con email: " + cliente.getEmail());
+            }
+            
+            System.out.println("✅ Cliente actualizado correctamente");
+            
+        } catch (SQLException e) {
+            throw new Exception("Error al actualizar cliente: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(ps);
             ConexionBD.cerrar(conn);

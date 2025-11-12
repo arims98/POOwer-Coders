@@ -5,12 +5,14 @@ import model.Cliente;
 import model.Pedido;
 import util.ConexionBD;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +54,10 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
 
     /**
      * AGREGA un nuevo pedido a la base de datos.
+     * AHORA USA TRANSACCIONES para garantizar la integridad.
+     * 
+     * ¿Por qué transacciones?: Si algo falla (ej: el artículo no existe),
+     * se deshace todo y no queda basura en la BD.
      */
     @Override
     public void agregar(Pedido pedido) throws Exception {
@@ -61,6 +67,10 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
 
         try {
             conn = ConexionBD.getConexion();
+            
+            // ⭐ INICIAR TRANSACCIÓN
+            conn.setAutoCommit(false);
+            
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             // Asignamos los valores (¡usamos los IDs de los objetos!)
@@ -76,12 +86,33 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             if (rsKeys.next()) {
                 pedido.setNumPedido(rsKeys.getInt(1));
             }
+            
+            // ⭐ CONFIRMAR TRANSACCIÓN (todo OK)
+            conn.commit();
+            System.out.println("✅ Pedido agregado con éxito (transacción confirmada)");
 
         } catch (SQLException e) {
+            // ⭐ REVERTIR TRANSACCIÓN (algo falló)
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    System.out.println("❌ Error: transacción revertida");
+                } catch (SQLException ex) {
+                    System.err.println("Error al hacer rollback: " + ex.getMessage());
+                }
+            }
             throw new Exception("Error al insertar pedido: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(ps);
-            ConexionBD.cerrar(conn);
+            if (conn != null) {
+                try {
+                    // ⭐ RESTAURAR autocommit al modo normal
+                    conn.setAutoCommit(true);
+                } catch (SQLException e) {
+                    System.err.println("Error al restaurar autoCommit: " + e.getMessage());
+                }
+                ConexionBD.cerrar(conn);
+            }
         }
     }
 
@@ -162,6 +193,164 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
 
         } catch (SQLException e) {
             throw new Exception("Error al eliminar pedido: " + e.getMessage(), e);
+        } finally {
+            ConexionBD.cerrar(ps);
+            ConexionBD.cerrar(conn);
+        }
+    }
+    
+    // =====================================================
+    // MÉTODOS QUE USAN PROCEDIMIENTOS ALMACENADOS
+    // =====================================================
+    
+    /**
+     * CREA UN PEDIDO USANDO EL PROCEDIMIENTO ALMACENADO.
+     * 
+     * ¿Qué hace?: Llama al procedimiento sp_agregar_pedido_completo
+     * ¿Por qué usarlo?: El procedimiento valida que cliente y artículo existan
+     * 
+     * @param clienteEmail Email del cliente
+     * @param articuloCodigo Código del artículo
+     * @param cantidad Cantidad a pedir
+     * @return El número del pedido creado (o 0 si hubo error)
+     * @throws Exception si algo falla
+     */
+    public int agregarPedidoConProcedimiento(String clienteEmail, int articuloCodigo, int cantidad) throws Exception {
+        // CALL sp_agregar_pedido_completo(?, ?, ?, ?, ?)
+        String sql = "{CALL sp_agregar_pedido_completo(?, ?, ?, ?, ?)}";
+        
+        Connection conn = null;
+        CallableStatement cs = null;
+        
+        try {
+            conn = ConexionBD.getConexion();
+            cs = conn.prepareCall(sql);
+            
+            // Parámetros de ENTRADA (IN)
+            cs.setString(1, clienteEmail);      // p_cliente_email
+            cs.setInt(2, articuloCodigo);       // p_articulo_codigo
+            cs.setInt(3, cantidad);             // p_cantidad
+            
+            // Parámetros de SALIDA (OUT)
+            cs.registerOutParameter(4, Types.INTEGER);    // p_num_pedido
+            cs.registerOutParameter(5, Types.VARCHAR);    // p_mensaje
+            
+            // Ejecutar el procedimiento
+            cs.execute();
+            
+            // Leer los resultados
+            int numPedido = cs.getInt(4);
+            String mensaje = cs.getString(5);
+            
+            System.out.println("📦 Resultado del procedimiento: " + mensaje);
+            
+            // Si el número de pedido es 0, hubo un error
+            if (numPedido == 0) {
+                throw new Exception(mensaje);
+            }
+            
+            return numPedido;
+            
+        } catch (SQLException e) {
+            throw new Exception("Error al ejecutar procedimiento agregar_pedido: " + e.getMessage(), e);
+        } finally {
+            ConexionBD.cerrar(cs);
+            ConexionBD.cerrar(conn);
+        }
+    }
+    
+    /**
+     * CALCULA EL TOTAL DE UN PEDIDO USANDO PROCEDIMIENTO ALMACENADO.
+     * 
+     * ¿Qué hace?: Llama al procedimiento sp_calcular_total_pedido
+     * ¿Por qué usarlo?: Calcula precios con descuentos Premium automáticamente
+     * 
+     * @param numPedido Número del pedido
+     * @return Array con [subtotal, gastos_envio, descuento, total]
+     * @throws Exception si algo falla
+     */
+    public double[] calcularTotalPedido(int numPedido) throws Exception {
+        // CALL sp_calcular_total_pedido(?, ?, ?, ?, ?, ?)
+        String sql = "{CALL sp_calcular_total_pedido(?, ?, ?, ?, ?, ?)}";
+        
+        Connection conn = null;
+        CallableStatement cs = null;
+        
+        try {
+            conn = ConexionBD.getConexion();
+            cs = conn.prepareCall(sql);
+            
+            // Parámetro de ENTRADA (IN)
+            cs.setInt(1, numPedido);
+            
+            // Parámetros de SALIDA (OUT)
+            cs.registerOutParameter(2, Types.DECIMAL);  // p_subtotal
+            cs.registerOutParameter(3, Types.DECIMAL);  // p_gastos_envio
+            cs.registerOutParameter(4, Types.DECIMAL);  // p_descuento
+            cs.registerOutParameter(5, Types.DECIMAL);  // p_total
+            cs.registerOutParameter(6, Types.VARCHAR);  // p_mensaje
+            
+            // Ejecutar
+            cs.execute();
+            
+            // Leer resultados
+            double subtotal = cs.getDouble(2);
+            double gastosEnvio = cs.getDouble(3);
+            double descuento = cs.getDouble(4);
+            double total = cs.getDouble(5);
+            String mensaje = cs.getString(6);
+            
+            System.out.println("💰 Cálculo del pedido: " + mensaje);
+            System.out.println("   Subtotal: " + subtotal + "€");
+            System.out.println("   Gastos envío: " + gastosEnvio + "€");
+            System.out.println("   Descuento: " + descuento + "€");
+            System.out.println("   TOTAL: " + total + "€");
+            
+            // Devolver como array
+            return new double[] {subtotal, gastosEnvio, descuento, total};
+            
+        } catch (SQLException e) {
+            throw new Exception("Error al calcular total del pedido: " + e.getMessage(), e);
+        } finally {
+            ConexionBD.cerrar(cs);
+            ConexionBD.cerrar(conn);
+        }
+    }
+    
+    /**
+     * ACTUALIZA un pedido existente en la base de datos.
+     * 
+     * ¿Qué actualiza?: Cantidad y estado del pedido
+     * ¿Qué NO actualiza?: El num_pedido (PK), cliente, artículo ni fecha
+     * 
+     * Casos de uso: Cambiar cantidad antes de enviar, o actualizar estado a ENVIADO
+     */
+    @Override
+    public void actualizar(Pedido pedido) throws Exception {
+        String sql = "UPDATE Pedido SET cantidad = ?, estado = ? WHERE num_pedido = ?";
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        
+        try {
+            conn = ConexionBD.getConexion();
+            ps = conn.prepareStatement(sql);
+            
+            // Asignamos los nuevos valores
+            ps.setInt(1, pedido.getCantidad());
+            ps.setString(2, pedido.getEstado().toString());  // Convertir enum a String
+            ps.setInt(3, pedido.getNumPedido());  // WHERE (el ID)
+            
+            int filasActualizadas = ps.executeUpdate();
+            
+            if (filasActualizadas == 0) {
+                throw new Exception("No se encontró el pedido número: " + pedido.getNumPedido());
+            }
+            
+            System.out.println("✅ Pedido actualizado correctamente");
+            
+        } catch (SQLException e) {
+            throw new Exception("Error al actualizar pedido: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(ps);
             ConexionBD.cerrar(conn);

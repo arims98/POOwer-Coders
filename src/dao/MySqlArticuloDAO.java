@@ -167,4 +167,45 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
             ConexionBD.cerrar(conn);
         }
     }
+    
+    /**
+     * ACTUALIZA un artículo existente en la base de datos.
+     * 
+     * ¿Qué actualiza?: Descripción, precio, gastos envío y tiempo preparación
+     * ¿Qué NO actualiza?: El código_articulo (es la PRIMARY KEY, no se cambia)
+     */
+    @Override
+    public void actualizar(Articulo articulo) throws Exception {
+        String sql = "UPDATE Articulo SET descripcion = ?, precio_venta = ?, " +
+                    "gastos_envio = ?, tiempoPrep = ? WHERE codigo_articulo = ?";
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        
+        try {
+            conn = ConexionBD.getConexion();
+            ps = conn.prepareStatement(sql);
+            
+            // Asignamos los nuevos valores
+            ps.setString(1, articulo.getDescripcion());
+            ps.setDouble(2, articulo.getPrecioVenta());
+            ps.setDouble(3, articulo.getGastosEnvio());
+            ps.setInt(4, articulo.getTiempoPreparacion());
+            ps.setInt(5, articulo.getCodigoArticulo());  // WHERE (el ID)
+            
+            int filasActualizadas = ps.executeUpdate();
+            
+            if (filasActualizadas == 0) {
+                throw new Exception("No se encontró el artículo con código: " + articulo.getCodigoArticulo());
+            }
+            
+            System.out.println("✅ Artículo actualizado correctamente");
+            
+        } catch (SQLException e) {
+            throw new Exception("Error al actualizar artículo: " + e.getMessage(), e);
+        } finally {
+            ConexionBD.cerrar(ps);
+            ConexionBD.cerrar(conn);
+        }
+    }
 }

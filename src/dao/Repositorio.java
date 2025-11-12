@@ -12,4 +12,11 @@ public interface Repositorio<T, K> {
     T buscarPorId(K id) throws Exception;
     List<T> listar() throws Exception;
     void eliminar(K id) throws Exception;
+    
+    /**
+     * Actualiza un objeto existente en la base de datos.
+     * @param objeto El objeto con los datos actualizados
+     * @throws Exception si hay algún error
+     */
+    void actualizar(T objeto) throws Exception;
 }
