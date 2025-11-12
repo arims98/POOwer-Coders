@@ -1,41 +1,41 @@
 package model;
 
-import java.util.ArrayList;     //Creamos lista dinámica
+import java.util.ArrayList;     //Creamos lista dinÃ¡mica
 import java.util.List;  
 
 public class ListaArticulos {
 
-    //"Estantería dónde guardamos los artículos"
+    //"EstanterÃ­a dÃ³nde guardamos los artÃ­culos"
     private List<Articulo> lista;
 
-    //Constructor que inicializa la lista (estantería), como Array list vacía
+    //Constructor que inicializa la lista (estanterÃ­a), como Array list vacÃ­a
     public ListaArticulos() {
         this.lista = new ArrayList<>();
     }
 
-    //Método para añadir artículos a la lista
+    //MÃ©todo para aÃ±adir artÃ­culos a la lista
     public void agregarArticulo(Articulo articulo) {
-        //Añadimos el artículo a la lista
+        //AÃ±adimos el artÃ­culo a la lista
         lista.add(articulo);
     }
 
-    //Método para obtener la lista de artículos
+    //MÃ©todo para obtener la lista de artÃ­culos
     public List<Articulo> getLista() {
         //Devuelve la lista completa
         return lista;  
     }
 
-    //Método para buscar un artículo por su código
+    //MÃ©todo para buscar un artÃ­culo por su cÃ³digo
     public Articulo buscarArticuloPorCodigo(String codigo) {
-        //Recorremos la lista de artículos
+        //Recorremos la lista de artÃ­culos
         for (Articulo articulo : lista) {
-            //Si el código del artículo coincide con el código buscado
+            //Si el cÃ³digo del artÃ­culo coincide con el cÃ³digo buscado
             if (String.valueOf(articulo.getCodigoArticulo()).equals(codigo)) {
-                //Devolvemos el artículo encontrado
+                //Devolvemos el artÃ­culo encontrado
                 return articulo;
             }
         }
-        //Si no se encuentra el artículo, devolvemos null
+        //Si no se encuentra el artÃ­culo, devolvemos null
         return null;
     }
     

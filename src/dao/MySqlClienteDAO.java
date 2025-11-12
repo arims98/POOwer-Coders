@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementación de MySQL para el Repositorio de Clientes.
+ * ImplementaciÃ³n de MySQL para el Repositorio de Clientes.
  * Implementa Repositorio<Cliente, String> porque su ID es el 'email' (un String).
  */
 public class MySqlClienteDAO implements Repositorio<Cliente, String> {
 
     /**
      * Mapea una fila del ResultSet a un objeto Cliente (Estandar o Premium).
-     * Esta es la parte más importante para manejar la herencia.
+     * Esta es la parte mÃ¡s importante para manejar la herencia.
      */
     private Cliente mapearCliente(ResultSet rs) throws SQLException {
         // Leemos los datos comunes de la tabla Cliente
@@ -37,7 +37,7 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
         String cuotaAnualStr = rs.getString("cuota_anual");
 
         if (cuotaAnualStr != null) {
-            // ¡Es Premium! Creamos un objeto ClientePremium
+            // Â¡Es Premium! Creamos un objeto ClientePremium
             ClientePremium premium = new ClientePremium(nombre, domicilio, nif, email);
             
             // Opcional: Si necesitaras usar la cuota o descuento en Java:
@@ -54,7 +54,7 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
 
     /**
      * AGREGA un nuevo cliente.
-     * Si es Premium, usa una TRANSACCIÓN para insertarlo en las dos tablas.
+     * Si es Premium, usa una TRANSACCIÃ“N para insertarlo en las dos tablas.
      */
     @Override
     public void agregar(Cliente cliente) throws Exception {
@@ -68,10 +68,10 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
 
         try {
             conn = ConexionBD.getConexion();
-            // 1. Iniciamos la TRANSACCIÓN
+            // 1. Iniciamos la TRANSACCIÃ“N
             conn.setAutoCommit(false);
 
-            // --- Parte 1: Insertar en la tabla Cliente (esto es común) ---
+            // --- Parte 1: Insertar en la tabla Cliente (esto es comÃºn) ---
             psCliente = conn.prepareStatement(sqlCliente);
             psCliente.setString(1, cliente.getEmail());
             psCliente.setString(2, cliente.getNombre());
@@ -81,37 +81,37 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
             if (cliente instanceof ClientePremium) {
                 psCliente.setString(5, "Premium"); // OJO: La BD usa 'Premium', no 'PREMIUM'
             } else {
-                psCliente.setString(5, "Estándar"); // OJO: La BD usa 'Estándar', no 'ESTANDAR'
+                psCliente.setString(5, "EstÃ¡ndar"); // OJO: La BD usa 'EstÃ¡ndar', no 'ESTANDAR'
             }
             psCliente.executeUpdate();
 
             // --- Parte 2: Si es Premium, insertar en la tabla ClientePremium ---
             if (cliente instanceof ClientePremium) {
-                // Hacemos "casting" para acceder a los métodos de Premium
+                // Hacemos "casting" para acceder a los mÃ©todos de Premium
                 ClientePremium premium = (ClientePremium) cliente;
 
                 psPremium = conn.prepareStatement(sqlPremium);
                 psPremium.setString(1, premium.getEmail());
                 psPremium.setDouble(2, premium.getCuotaAnual()); // Guardamos el 30
                 
-                // ¡El "desajuste"! Java tiene 0.2, la BD espera 20
+                // Â¡El "desajuste"! Java tiene 0.2, la BD espera 20
                 int descuentoDB = (int) (premium.getDescuentoEnvio() * 100); // 0.2 * 100 = 20
                 psPremium.setInt(3, descuentoDB);
                 
                 psPremium.executeUpdate();
             }
 
-            // 2. Si todo fue bien, CONFIRMAMOS la transacción
+            // 2. Si todo fue bien, CONFIRMAMOS la transacciÃ³n
             conn.commit();
 
         } catch (SQLException e) {
-            // 3. Si algo falló, DESHACEMOS la transacción
+            // 3. Si algo fallÃ³, DESHACEMOS la transacciÃ³n
             if (conn != null) {
                 conn.rollback();
             }
-            throw new Exception("Error al agregar cliente (transacción revertida): " + e.getMessage(), e);
+            throw new Exception("Error al agregar cliente (transacciÃ³n revertida): " + e.getMessage(), e);
         } finally {
-            // 4. Cerramos todo y devolvemos la conexión al modo normal
+            // 4. Cerramos todo y devolvemos la conexiÃ³n al modo normal
             ConexionBD.cerrar(psCliente);
             ConexionBD.cerrar(psPremium);
             if (conn != null) {
@@ -128,7 +128,7 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
     @Override
     public Cliente buscarPorId(String email) throws Exception {
         // Esta SQL une Cliente con ClientePremium.
-        // Si el cliente no está en ClientePremium, los campos (cuota_anual) vendrán como NULL.
+        // Si el cliente no estÃ¡ en ClientePremium, los campos (cuota_anual) vendrÃ¡n como NULL.
         String sql = "SELECT c.*, cp.cuota_anual, cp.descuento_envio " +
                      "FROM Cliente c " +
                      "LEFT JOIN ClientePremium cp ON c.email = cp.cliente_email " +
@@ -147,7 +147,7 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
             if (rs.next()) {
                 return mapearCliente(rs); // Usamos el mapeador
             }
-            return null; // No se encontró
+            return null; // No se encontrÃ³
 
         } catch (SQLException e) {
             throw new Exception("Error al buscar cliente: " + e.getMessage(), e);
@@ -193,7 +193,7 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
     /**
      * ELIMINA un cliente por su ID (email).
      * Gracias a "ON DELETE CASCADE" en la BD, si borramos de Cliente,
-     * se borra automáticamente de ClientePremium.
+     * se borra automÃ¡ticamente de ClientePremium.
      */
     @Override
     public void eliminar(String email) throws Exception {
@@ -208,7 +208,7 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
             ps.executeUpdate();
             
         } catch (SQLException e) {
-            // Fallará si el cliente tiene pedidos (por la FOREIGN KEY)
+            // FallarÃ¡ si el cliente tiene pedidos (por la FOREIGN KEY)
             throw new Exception("Error al eliminar cliente: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(ps);
@@ -217,14 +217,14 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
     }
     
     // =====================================================
-    // MÉTODOS QUE USAN PROCEDIMIENTOS ALMACENADOS
+    // MÃ‰TODOS QUE USAN PROCEDIMIENTOS ALMACENADOS
     // =====================================================
     
     /**
-     * OBTIENE ESTADÍSTICAS DE UN CLIENTE USANDO PROCEDIMIENTO ALMACENADO.
+     * OBTIENE ESTADÃSTICAS DE UN CLIENTE USANDO PROCEDIMIENTO ALMACENADO.
      * 
-     * ¿Qué hace?: Llama al procedimiento sp_obtener_estadisticas_cliente
-     * ¿Por qué usarlo?: Centraliza la lógica de estadísticas en la BD
+     * Â¿QuÃ© hace?: Llama al procedimiento sp_obtener_estadisticas_cliente
+     * Â¿Por quÃ© usarlo?: Centraliza la lÃ³gica de estadÃ­sticas en la BD
      * 
      * @param email Email del cliente
      * @return Array con [totalPedidos, gastoTotal] (como String el gasto)
@@ -241,10 +241,10 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
             conn = ConexionBD.getConexion();
             cs = conn.prepareCall(sql);
             
-            // Parámetro de ENTRADA (IN)
+            // ParÃ¡metro de ENTRADA (IN)
             cs.setString(1, email);
             
-            // Parámetros de SALIDA (OUT)
+            // ParÃ¡metros de SALIDA (OUT)
             cs.registerOutParameter(2, Types.INTEGER);   // p_total_pedidos
             cs.registerOutParameter(3, Types.DECIMAL);   // p_gasto_total
             cs.registerOutParameter(4, Types.VARCHAR);   // p_tipo_cliente
@@ -259,20 +259,20 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
             String tipoCliente = cs.getString(4);
             // String mensaje = cs.getString(5);  // Opcional: mensaje del procedimiento
             
-            // Mostrar información
-            System.out.println("\n📊 ESTADÍSTICAS DEL CLIENTE");
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            // Mostrar informaciÃ³n
+            System.out.println("\nðŸ“Š ESTADÃSTICAS DEL CLIENTE");
+            System.out.println("â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”");
             System.out.println("Email: " + email);
             System.out.println("Tipo: " + tipoCliente);
             System.out.println("Total de pedidos: " + totalPedidos);
-            System.out.println("Gasto total: " + gastoTotal + "€");
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+            System.out.println("Gasto total: " + gastoTotal + "â‚¬");
+            System.out.println("â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n");
             
-            return String.format("Pedidos: %d, Gasto: %.2f€, Tipo: %s", 
+            return String.format("Pedidos: %d, Gasto: %.2fâ‚¬, Tipo: %s", 
                                totalPedidos, gastoTotal, tipoCliente);
             
         } catch (SQLException e) {
-            throw new Exception("Error al obtener estadísticas: " + e.getMessage(), e);
+            throw new Exception("Error al obtener estadÃ­sticas: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(cs);
             ConexionBD.cerrar(conn);
@@ -282,11 +282,11 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
     /**
      * ACTUALIZA un cliente existente en la base de datos.
      * 
-     * ¿Qué actualiza?: Nombre, domicilio y NIF
-     * ¿Qué NO actualiza?: El email (PRIMARY KEY) ni el tipo de cliente
+     * Â¿QuÃ© actualiza?: Nombre, domicilio y NIF
+     * Â¿QuÃ© NO actualiza?: El email (PRIMARY KEY) ni el tipo de cliente
      * 
-     * NOTA: Para cambiar de Estándar a Premium (o viceversa), 
-     * sería necesario otra lógica más compleja con transacciones.
+     * NOTA: Para cambiar de EstÃ¡ndar a Premium (o viceversa), 
+     * serÃ­a necesario otra lÃ³gica mÃ¡s compleja con transacciones.
      */
     @Override
     public void actualizar(Cliente cliente) throws Exception {
@@ -308,10 +308,10 @@ public class MySqlClienteDAO implements Repositorio<Cliente, String> {
             int filasActualizadas = ps.executeUpdate();
             
             if (filasActualizadas == 0) {
-                throw new Exception("No se encontró el cliente con email: " + cliente.getEmail());
+                throw new Exception("No se encontrÃ³ el cliente con email: " + cliente.getEmail());
             }
             
-            System.out.println("✅ Cliente actualizado correctamente");
+            System.out.println("âœ… Cliente actualizado correctamente");
             
         } catch (SQLException e) {
             throw new Exception("Error al actualizar cliente: " + e.getMessage(), e);

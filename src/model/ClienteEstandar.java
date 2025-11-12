@@ -8,6 +8,6 @@ public class ClienteEstandar extends Cliente {
 
     @Override
     public String toString() {
-        return super.toString().replace("}", "") + ", tipo=Estándar}";
+        return super.toString().replace("}", "") + ", tipo=EstÃ¡ndar}";
     }
 }

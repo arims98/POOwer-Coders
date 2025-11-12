@@ -5,7 +5,7 @@ import controller.Controlador;
  */
 public class MainApp {
     public static void main(String[] args) {
-        // Instanciamos el controlador y lanzamos la aplicación
+        // Instanciamos el controlador y lanzamos la aplicaciÃ³n
         Controlador app = new Controlador();
         app.iniciarApp();
     }

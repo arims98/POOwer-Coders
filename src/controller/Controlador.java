@@ -1,7 +1,7 @@
 package controller;
 
 import model.Datos;
-import view.Consola; // Necesitarás pasarme esta clase si da error
+import view.Consola; // NecesitarÃ¡s pasarme esta clase si da error
 import model.Articulo;
 import model.Cliente;
 import model.ClienteEstandar;
@@ -20,7 +20,7 @@ public class Controlador {
         this.datos = new Datos();
         this.vista = new Consola(); // Asumo que tienes esta clase en 'view'
         
-        // <-- CAMBIO: ¡YA NO CARGAMOS DATOS DEMO!
+        // <-- CAMBIO: Â¡YA NO CARGAMOS DATOS DEMO!
         // this.datos.cargarDatosDemo(); 
     }
 
@@ -30,7 +30,7 @@ public class Controlador {
     }
     
     // ... (Tu 'iniciarApp' y 'switch' se quedan igual) ...
-    // Pega el resto de tu método iniciarApp() aquí
+    // Pega el resto de tu mÃ©todo iniciarApp() aquÃ­
     public void iniciarApp() {
         
         int opcion;
@@ -49,16 +49,16 @@ public class Controlador {
                     menuGestionPedidos();
                     break;
                 case 4: 
-                    vista.mostrarMensaje("¡Gracias por visitar Online Store!");
+                    vista.mostrarMensaje("Â¡Gracias por visitar Online Store!");
                     break;
                 default:
-                    vista.mostrarMensaje("Opción no válida. Inténtalo de nuevo.");
+                    vista.mostrarMensaje("OpciÃ³n no vÃ¡lida. IntÃ©ntalo de nuevo.");
             }
         } while (opcion != 4);
     }
     
-    // ... (Tus métodos de 'menu' se quedan igual) ...
-    // Pega tus métodos menuGestionArticulos(), menuGestionClientes(), menuGestionPedidos()
+    // ... (Tus mÃ©todos de 'menu' se quedan igual) ...
+    // Pega tus mÃ©todos menuGestionArticulos(), menuGestionClientes(), menuGestionPedidos()
     private void menuGestionArticulos() {
         int opcion;
         do {
@@ -68,16 +68,16 @@ public class Controlador {
                     mostrarArticulos();
                     break;
                 case 2:
-                    // agregarArticulo(); // Tendrías que crear este método
+                    // agregarArticulo(); // TendrÃ­as que crear este mÃ©todo
                     break;
                 case 3:
-                    // eliminarArticulo(); // Tendrías que crear este método
+                    // eliminarArticulo(); // TendrÃ­as que crear este mÃ©todo
                     break;
                 case 4:
-                    vista.mostrarMensaje("Volviendo al menú principal...");
+                    vista.mostrarMensaje("Volviendo al menÃº principal...");
                     break;
                 default:
-                    vista.mostrarMensaje("Opción no válida.");
+                    vista.mostrarMensaje("OpciÃ³n no vÃ¡lida.");
             }
         } while (opcion != 4);
     }
@@ -94,13 +94,13 @@ public class Controlador {
                     agregarCliente();
                     break;
                 case 3:
-                    // eliminarCliente(); // Tendrías que crear este método
+                    // eliminarCliente(); // TendrÃ­as que crear este mÃ©todo
                     break;
                 case 4:
-                    vista.mostrarMensaje("Volviendo al menú principal...");
+                    vista.mostrarMensaje("Volviendo al menÃº principal...");
                     break;
                 default:
-                    vista.mostrarMensaje("Opción no válida.");
+                    vista.mostrarMensaje("OpciÃ³n no vÃ¡lida.");
             }
         } while (opcion != 4);
     }
@@ -120,31 +120,31 @@ public class Controlador {
                     eliminarPedido();
                     break;
                 case 4:
-                    vista.mostrarMensaje("Volviendo al menú principal...");
+                    vista.mostrarMensaje("Volviendo al menÃº principal...");
                     break;
                 default:
-                    vista.mostrarMensaje("Opción no válida.");
+                    vista.mostrarMensaje("OpciÃ³n no vÃ¡lida.");
             }
         } while (opcion != 4);
     }
 
-    // --- MÉTODOS DE LÓGICA (AHORA USAN DAOs) ---
+    // --- MÃ‰TODOS DE LÃ“GICA (AHORA USAN DAOs) ---
     
     private void mostrarArticulos() {
-        vista.mostrarMensaje("\n--- LISTA DE ARTÍCULOS ---");
+        vista.mostrarMensaje("\n--- LISTA DE ARTÃCULOS ---");
         try {
             // <-- CAMBIO: Usamos el DAO
             List<Articulo> articulos = datos.getRepoArticulo().listar();
             
             if (articulos.isEmpty()) {
-                vista.mostrarMensaje("No hay artículos que mostrar.");
+                vista.mostrarMensaje("No hay artÃ­culos que mostrar.");
             } else {
                 for (Articulo a : articulos) {
                     vista.mostrarMensaje(a.toString());
                 }
             }
         } catch (Exception e) {
-            vista.mostrarMensaje("Error al listar artículos: " + e.getMessage());
+            vista.mostrarMensaje("Error al listar artÃ­culos: " + e.getMessage());
         }
     }
 
@@ -173,7 +173,7 @@ public class Controlador {
         String domicilio = vista.pedirString("Domicilio: ");
         String nif = vista.pedirString("NIF: ");
         String email = vista.pedirString("Email: ");
-        int tipo = vista.pedirInt("Tipo de cliente (1=Estándar, 2=Premium): ");
+        int tipo = vista.pedirInt("Tipo de cliente (1=EstÃ¡ndar, 2=Premium): ");
         
         Cliente nuevoCliente;
         if (tipo == 2) {
@@ -214,7 +214,7 @@ public class Controlador {
         vista.mostrarMensaje("\n--- CREAR NUEVO PEDIDO ---");
         
         String emailCliente = vista.pedirString("Email del cliente: ");
-        int codigoArticulo = vista.pedirInt("Código del artículo: ");
+        int codigoArticulo = vista.pedirInt("CÃ³digo del artÃ­culo: ");
         int cantidad = vista.pedirInt("Cantidad de unidades: ");
         
         try {
@@ -223,7 +223,7 @@ public class Controlador {
             Articulo articulo = datos.getRepoArticulo().buscarPorId(codigoArticulo);
             
             if (cliente == null || articulo == null) {
-                vista.mostrarMensaje("ERROR!!: Cliente o Artículo no encontrado.");
+                vista.mostrarMensaje("ERROR!!: Cliente o ArtÃ­culo no encontrado.");
                 return;
             }
             
@@ -233,7 +233,7 @@ public class Controlador {
             // <-- CAMBIO: Usamos el DAO
             datos.getRepoPedido().agregar(nuevoPedido);
             
-            vista.mostrarMensaje(" Pedido N.º " + nuevoPedido.getNumPedido() + " (ID de BD) creado correctamente.");
+            vista.mostrarMensaje(" Pedido N.Âº " + nuevoPedido.getNumPedido() + " (ID de BD) creado correctamente.");
             
         } catch (Exception e) {
             vista.mostrarMensaje("Error al crear pedido: " + e.getMessage());
@@ -242,12 +242,12 @@ public class Controlador {
 
     private void eliminarPedido() {
         vista.mostrarMensaje("\n--- ELIMINAR PEDIDO ---");
-        int numeroPedido = vista.pedirInt("Introduce el número de pedido a eliminar: ");
+        int numeroPedido = vista.pedirInt("Introduce el nÃºmero de pedido a eliminar: ");
         
         try {
             // <-- CAMBIO: Usamos el DAO
             datos.getRepoPedido().eliminar(numeroPedido);
-            vista.mostrarMensaje(" Pedido N.º " + numeroPedido + " eliminado correctamente.");
+            vista.mostrarMensaje(" Pedido N.Âº " + numeroPedido + " eliminado correctamente.");
         } catch (Exception e) {
             vista.mostrarMensaje("ERROR!!: El pedido no se pudo eliminar: " + e.getMessage());
         }

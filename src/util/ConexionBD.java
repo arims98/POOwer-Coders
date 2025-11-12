@@ -8,19 +8,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Clase utilitaria para gestionar la conexión a la base de datos MySQL.
+ * Clase utilitaria para gestionar la conexiÃ³n a la base de datos MySQL.
  */
 public class ConexionBD {
     
-    // Parámetros de conexión a la base de datos
+    // ParÃ¡metros de conexiÃ³n a la base de datos
     private static final String URL = "jdbc:mysql://localhost:3306/online_store_db";
     private static final String USUARIO = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "1234";
     
     /**
-     * Obtiene una conexión a la base de datos.
+     * Obtiene una conexiÃ³n a la base de datos.
      * 
-     * @return Connection objeto de conexión a la BD
+     * @return Connection objeto de conexiÃ³n a la BD
      * @throws SQLException si hay un error al conectar
      */
     public static Connection getConexion() throws SQLException {
@@ -43,7 +43,7 @@ public class ConexionBD {
             try {
                 conn.close();
             } catch (SQLException e) {
-                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+                System.err.println("Error al cerrar la conexiÃ³n: " + e.getMessage());
             }
         }
     }
