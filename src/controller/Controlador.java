@@ -49,10 +49,10 @@ public class Controlador {
                     menuGestionPedidos();
                     break;
                 case 4: 
-                    vista.mostrarMensaje("Â¡Gracias por visitar Online Store!");
+                    vista.mostrarMensaje("Gracias por visitar Online Store!");
                     break;
                 default:
-                    vista.mostrarMensaje("OpciÃ³n no vÃ¡lida. IntÃ©ntalo de nuevo.");
+                    vista.mostrarMensaje("Opcion no valida. Intentalo de nuevo.");
             }
         } while (opcion != 4);
     }
@@ -71,13 +71,13 @@ public class Controlador {
                     // agregarArticulo(); // TendrÃ­as que crear este mÃ©todo
                     break;
                 case 3:
-                    // eliminarArticulo(); // TendrÃ­as que crear este mÃ©todo
+                    // eliminarArticulo(); // Tendrias que crear este metodo
                     break;
                 case 4:
-                    vista.mostrarMensaje("Volviendo al menÃº principal...");
+                    vista.mostrarMensaje("Volviendo al menu principal...");
                     break;
                 default:
-                    vista.mostrarMensaje("OpciÃ³n no vÃ¡lida.");
+                    vista.mostrarMensaje("Opcion no valida.");
             }
         } while (opcion != 4);
     }
@@ -94,13 +94,13 @@ public class Controlador {
                     agregarCliente();
                     break;
                 case 3:
-                    // eliminarCliente(); // TendrÃ­as que crear este mÃ©todo
+                    // eliminarCliente(); // Tendrias que crear este metodo
                     break;
                 case 4:
-                    vista.mostrarMensaje("Volviendo al menÃº principal...");
+                    vista.mostrarMensaje("Volviendo al menu principal...");
                     break;
                 default:
-                    vista.mostrarMensaje("OpciÃ³n no vÃ¡lida.");
+                    vista.mostrarMensaje("Opcion no valida.");
             }
         } while (opcion != 4);
     }
@@ -120,10 +120,10 @@ public class Controlador {
                     eliminarPedido();
                     break;
                 case 4:
-                    vista.mostrarMensaje("Volviendo al menÃº principal...");
+                    vista.mostrarMensaje("Volviendo al menu principal...");
                     break;
                 default:
-                    vista.mostrarMensaje("OpciÃ³n no vÃ¡lida.");
+                    vista.mostrarMensaje("Opcion no valida.");
             }
         } while (opcion != 4);
     }
@@ -131,20 +131,20 @@ public class Controlador {
     // --- MÃ‰TODOS DE LÃ“GICA (AHORA USAN DAOs) ---
     
     private void mostrarArticulos() {
-        vista.mostrarMensaje("\n--- LISTA DE ARTÃCULOS ---");
+        vista.mostrarMensaje("\n--- LISTA DE ARTICULOS ---");
         try {
             // <-- CAMBIO: Usamos el DAO
             List<Articulo> articulos = datos.getRepoArticulo().listar();
             
             if (articulos.isEmpty()) {
-                vista.mostrarMensaje("No hay artÃ­culos que mostrar.");
+                vista.mostrarMensaje("No hay articulos que mostrar.");
             } else {
                 for (Articulo a : articulos) {
                     vista.mostrarMensaje(a.toString());
                 }
             }
         } catch (Exception e) {
-            vista.mostrarMensaje("Error al listar artÃ­culos: " + e.getMessage());
+            vista.mostrarMensaje("Error al listar articulos: " + e.getMessage());
         }
     }
 
@@ -173,7 +173,7 @@ public class Controlador {
         String domicilio = vista.pedirString("Domicilio: ");
         String nif = vista.pedirString("NIF: ");
         String email = vista.pedirString("Email: ");
-        int tipo = vista.pedirInt("Tipo de cliente (1=EstÃ¡ndar, 2=Premium): ");
+        int tipo = vista.pedirInt("Tipo de cliente (1=Estandar, 2=Premium): ");
         
         Cliente nuevoCliente;
         if (tipo == 2) {
@@ -214,7 +214,7 @@ public class Controlador {
         vista.mostrarMensaje("\n--- CREAR NUEVO PEDIDO ---");
         
         String emailCliente = vista.pedirString("Email del cliente: ");
-        int codigoArticulo = vista.pedirInt("CÃ³digo del artÃ­culo: ");
+        int codigoArticulo = vista.pedirInt("Codigo del articulo: ");
         int cantidad = vista.pedirInt("Cantidad de unidades: ");
         
         try {
@@ -223,7 +223,7 @@ public class Controlador {
             Articulo articulo = datos.getRepoArticulo().buscarPorId(codigoArticulo);
             
             if (cliente == null || articulo == null) {
-                vista.mostrarMensaje("ERROR!!: Cliente o ArtÃ­culo no encontrado.");
+                vista.mostrarMensaje("ERROR: Cliente o Articulo no encontrado.");
                 return;
             }
             
@@ -233,7 +233,7 @@ public class Controlador {
             // <-- CAMBIO: Usamos el DAO
             datos.getRepoPedido().agregar(nuevoPedido);
             
-            vista.mostrarMensaje(" Pedido N.Âº " + nuevoPedido.getNumPedido() + " (ID de BD) creado correctamente.");
+            vista.mostrarMensaje("Pedido No. " + nuevoPedido.getNumPedido() + " (ID de BD) creado correctamente.");
             
         } catch (Exception e) {
             vista.mostrarMensaje("Error al crear pedido: " + e.getMessage());
@@ -242,14 +242,14 @@ public class Controlador {
 
     private void eliminarPedido() {
         vista.mostrarMensaje("\n--- ELIMINAR PEDIDO ---");
-        int numeroPedido = vista.pedirInt("Introduce el nÃºmero de pedido a eliminar: ");
+        int numeroPedido = vista.pedirInt("Introduce el numero de pedido a eliminar: ");
         
         try {
             // <-- CAMBIO: Usamos el DAO
             datos.getRepoPedido().eliminar(numeroPedido);
-            vista.mostrarMensaje(" Pedido N.Âº " + numeroPedido + " eliminado correctamente.");
+            vista.mostrarMensaje("Pedido No. " + numeroPedido + " eliminado correctamente.");
         } catch (Exception e) {
-            vista.mostrarMensaje("ERROR!!: El pedido no se pudo eliminar: " + e.getMessage());
+            vista.mostrarMensaje("ERROR: El pedido no se pudo eliminar: " + e.getMessage());
         }
     }
 }
