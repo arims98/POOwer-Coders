@@ -1,8 +1,7 @@
 package model;
 
 import java.util.ArrayList;     //Creamos lista dinámica
-import java.util.List;  
-import java.util.stream.Collectors; //Para usar streams y collectors (hace de filtro)
+import java.util.List;
 
 public class ListaPedidos {
 
@@ -50,18 +49,19 @@ public class ListaPedidos {
     }
     
     //Método para obtener la lista de pedidos pendientes
+    // NOTA: Como la BD ya no tiene campo "estado", este método devuelve todos los pedidos
+    // Podrías filtrar por fecha u otro criterio si lo necesitas
     public List<Pedido> getPedidosPendientes() {
-        //Se usan streams y "instanceof" para filtrar la lista
-        return lista.stream()
-                .filter(p -> p.getEstado() == Pedido.Estado.PENDIENTE)
-                .collect(Collectors.toList());
+        // Devolvemos todos los pedidos (ya no hay estado en la BD)
+        return new ArrayList<>(lista);
     }
 
     //método para obtener la lista de pedidos enviados
+    // NOTA: Como la BD ya no tiene campo "estado", este método devuelve lista vacía
+    // O podrías usar otro criterio para identificar pedidos "enviados"
     public List<Pedido> getPedidosEnviados() {
-        //Se usan streams y "instanceof" para filtrar la lista
-        return lista.stream()
-                .filter(p -> p.getEstado() == Pedido.Estado.ENVIADO)
-                .collect(Collectors.toList());
+        // Sin campo estado en BD, devolvemos lista vacía
+        // Podrías implementar otro filtro si lo necesitas
+        return new ArrayList<>();
     }
 }

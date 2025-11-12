@@ -13,7 +13,7 @@ import java.sql.Statement;
 public class ConexionBD {
     
     // Parámetros de conexión a la base de datos
-    private static final String URL = "jdbc:mysql://localhost:3306/tienda";
+    private static final String URL = "jdbc:mysql://localhost:3306/online_store_db";
     private static final String USUARIO = "root";
     private static final String PASSWORD = "";
     

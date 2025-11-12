@@ -1,11 +1,9 @@
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS - TIENDA ONLINE
 -- =====================================================
--- Los procedimientos almacenados son "funciones" guardadas en la BD
--- Permiten ejecutar lógica compleja en el servidor de BD
--- Ventajas: rendimiento, seguridad, reutilización
+-- Adaptado para la base de datos: online_store_db
 
-USE tienda;
+USE online_store_db;
 
 -- Eliminar procedimientos si existen (para poder recrearlos)
 DROP PROCEDURE IF EXISTS sp_agregar_pedido_completo;
@@ -26,6 +24,7 @@ CREATE PROCEDURE sp_agregar_pedido_completo(
     IN p_articulo_codigo INT,            -- Código del artículo
     IN p_cantidad INT,                   -- Cantidad a pedir
     OUT p_num_pedido INT,                -- Devuelve el número de pedido creado
+    OUT p_precio_total DECIMAL(10,2),    -- Devuelve el precio total calculado
     OUT p_mensaje VARCHAR(200)           -- Devuelve mensaje de éxito/error
 )
 BEGIN
@@ -33,9 +32,15 @@ BEGIN
     DECLARE v_cliente_existe INT;
     DECLARE v_articulo_existe INT;
     DECLARE v_tipo_cliente VARCHAR(20);
+    DECLARE v_precio_venta DECIMAL(10,2);
+    DECLARE v_gastos_envio DECIMAL(10,2);
+    DECLARE v_descuento_envio INT DEFAULT 0;
+    DECLARE v_subtotal DECIMAL(10,2);
+    DECLARE v_gastos_finales DECIMAL(10,2);
     
     -- Inicializamos los valores de salida
     SET p_num_pedido = 0;
+    SET p_precio_total = 0;
     SET p_mensaje = '';
     
     -- PASO 1: Verificar que el cliente existe
@@ -45,7 +50,6 @@ BEGIN
     
     IF v_cliente_existe = 0 THEN
         SET p_mensaje = 'ERROR: El cliente no existe';
-        -- ROLLBACK; -- Si estuviera en una transacción
     ELSE
         -- PASO 2: Verificar que el artículo existe
         SELECT COUNT(*) INTO v_articulo_existe 
@@ -59,20 +63,41 @@ BEGIN
             IF p_cantidad <= 0 THEN
                 SET p_mensaje = 'ERROR: La cantidad debe ser mayor a 0';
             ELSE
-                -- PASO 4: Todo OK, crear el pedido
-                INSERT INTO Pedido (cliente_email, articulo_codigo, cantidad, fecha_hora, estado)
-                VALUES (p_cliente_email, p_articulo_codigo, p_cantidad, NOW(), 'PENDIENTE');
+                -- PASO 4: Obtener datos del artículo
+                SELECT precio_venta, gastos_envio INTO v_precio_venta, v_gastos_envio
+                FROM Articulo
+                WHERE codigo_articulo = p_articulo_codigo;
                 
-                -- Obtener el ID del pedido recién creado
-                SET p_num_pedido = LAST_INSERT_ID();
+                -- PASO 5: Calcular subtotal
+                SET v_subtotal = v_precio_venta * p_cantidad;
+                SET v_gastos_finales = v_gastos_envio;
                 
-                -- Obtener el tipo de cliente
+                -- PASO 6: Verificar si es Premium y aplicar descuento
                 SELECT tipo_cliente INTO v_tipo_cliente
                 FROM Cliente
                 WHERE email = p_cliente_email;
                 
+                IF v_tipo_cliente = 'Premium' THEN
+                    SELECT descuento_envio INTO v_descuento_envio
+                    FROM ClientePremium
+                    WHERE cliente_email = p_cliente_email;
+                    
+                    -- Aplicar descuento (ej: 20% de descuento)
+                    SET v_gastos_finales = v_gastos_envio * (1 - v_descuento_envio/100);
+                END IF;
+                
+                -- PASO 7: Calcular precio total
+                SET p_precio_total = v_subtotal + v_gastos_finales;
+                
+                -- PASO 8: Insertar el pedido con precio_total
+                INSERT INTO Pedido (cliente_email, articulo_codigo, cantidad, fecha_hora, precio_total)
+                VALUES (p_cliente_email, p_articulo_codigo, p_cantidad, NOW(), p_precio_total);
+                
+                -- Obtener el ID del pedido recién creado
+                SET p_num_pedido = LAST_INSERT_ID();
+                
                 SET p_mensaje = CONCAT('Pedido creado exitosamente. Número: ', p_num_pedido, 
-                                     '. Cliente tipo: ', v_tipo_cliente);
+                                     '. Cliente tipo: ', v_tipo_cliente, '. Total: ', p_precio_total, '€');
             END IF;
         END IF;
     END IF;
