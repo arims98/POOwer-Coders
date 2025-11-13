@@ -68,10 +68,11 @@ public class Controlador {
                     mostrarArticulos();
                     break;
                 case 2:
-                    // agregarArticulo(); // TendrÃ­as que crear este mÃ©todo
+                    agregarArticulo();
                     break;
                 case 3:
                     // eliminarArticulo(); // Tendrias que crear este metodo
+                    vista.mostrarMensaje("Funcionalidad no implementada aun.");
                     break;
                 case 4:
                     vista.mostrarMensaje("Volviendo al menu principal...");
@@ -145,6 +146,25 @@ public class Controlador {
             }
         } catch (Exception e) {
             vista.mostrarMensaje("Error al listar articulos: " + e.getMessage());
+        }
+    }
+
+    private void agregarArticulo() {
+        vista.mostrarMensaje("\n--- CREAR NUEVO ARTICULO ---");
+        
+        String descripcion = vista.pedirString("Descripcion: ");
+        float precioVenta = vista.pedirFloat("Precio de venta: ");
+        float gastosEnvio = vista.pedirFloat("Gastos de envio: ");
+        int tiempoPrep = vista.pedirInt("Tiempo de preparacion (minutos): ");
+        
+        // Constructor sin codigo (se genera automaticamente en BD)
+        Articulo nuevoArticulo = new Articulo(0, descripcion, precioVenta, gastosEnvio, tiempoPrep);
+        
+        try {
+            datos.getRepoArticulo().agregar(nuevoArticulo);
+            vista.mostrarMensaje("Articulo '" + descripcion + "' creado correctamente.");
+        } catch (Exception e) {
+            vista.mostrarMensaje("Error al crear articulo: " + e.getMessage());
         }
     }
 
