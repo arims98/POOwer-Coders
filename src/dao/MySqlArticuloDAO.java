@@ -1,7 +1,7 @@
 package dao;
 
 import model.Articulo;
-import util.ConexionBD; // Â¡Importamos nuestra clase de conexiÃ³n!
+import util.ConexionBD;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Esta es la implementaciÃ³n de MySQL para el Repositorio de Articulos.
+ * Esta es la implementacion de MySQL para el Repositorio de Articulos.
  * Implementa el "contrato" (Interfaz Repositorio)
  * El <Articulo, Integer> significa que maneja "Articulos" y su ID es un "Integer".
  */
 public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
 
-    // MÃ©todo para "traducir" una fila de la BD a un objeto Articulo
+    // Metodo para "traducir" una fila de la BD a un objeto Articulo
     private Articulo mapearArticulo(ResultSet rs) throws SQLException {
         // Leemos los nombres de columna EXACTOS de tu script SQL
         int codigoArticulo = rs.getInt("codigo_articulo");
@@ -32,8 +32,8 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
     }
 
     /**
-     * AGREGA un nuevo artÃ­culo a la base de datos.
-     * Usa el constructor SIN ID que aÃ±adimos.
+     * AGREGA un nuevo articulo a la base de datos.
+     * Usa el constructor SIN ID que anadimos.
      */
     @Override
     public void agregar(Articulo articulo) throws Exception {
@@ -44,7 +44,7 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
         PreparedStatement ps = null;
 
         try {
-            // 2. Obtenemos una conexiÃ³n del "fontanero"
+            // 2. Obtenemos una conexion del "fontanero"
             conn = ConexionBD.getConexion();
             
             // 3. Preparamos la sentencia SQL
@@ -57,7 +57,7 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
             ps.setDouble(3, articulo.getGastosEnvio());
             ps.setInt(4, articulo.getTiempoPreparacion());
 
-            // 5. Ejecutamos la inserciÃ³n
+            // 5. Ejecutamos la insercion
             ps.executeUpdate();
 
             // 6. (Opcional pero bueno) Obtenemos el ID generado y lo ponemos en el objeto
@@ -67,17 +67,17 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
             }
 
         } catch (SQLException e) {
-            // Si algo va mal, lanzamos una excepciÃ³n
-            throw new Exception("Error al insertar artÃ­culo: " + e.getMessage(), e);
+            // Si algo va mal, lanzamos una excepcion
+            throw new Exception("Error al insertar articulo: " + e.getMessage(), e);
         } finally {
-            // 7. Cerramos todo (Â¡siempre!)
+            // 7. Cerramos todo (siempre!)
             ConexionBD.cerrar(ps);
             ConexionBD.cerrar(conn);
         }
     }
 
     /**
-     * BUSCA un artÃ­culo por su ID (que ahora es un Integer).
+     * BUSCA un articulo por su ID (que ahora es un Integer).
      */
     @Override
     public Articulo buscarPorId(Integer id) throws Exception {
@@ -102,7 +102,7 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
             return null; 
 
         } catch (SQLException e) {
-            throw new Exception("Error al buscar artÃ­culo: " + e.getMessage(), e);
+            throw new Exception("Error al buscar articulo: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(rs);
             ConexionBD.cerrar(ps);
@@ -111,7 +111,7 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
     }
 
     /**
-     * LISTA todos los artÃ­culos de la tabla.
+     * LISTA todos los articulos de la tabla.
      */
     @Override
     public List<Articulo> listar() throws Exception {
@@ -132,18 +132,18 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
             }
 
         } catch (SQLException e) {
-            throw new Exception("Error al listar artÃ­culos: " + e.getMessage(), e);
+            throw new Exception("Error al listar articulos: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(rs);
             ConexionBD.cerrar(ps);
             ConexionBD.cerrar(conn);
         }
         
-        return articulos; // Devolvemos la lista (puede estar vacÃ­a)
+        return articulos; // Devolvemos la lista (puede estar vacia)
     }
 
     /**
-     * ELIMINA un artÃ­culo por su ID (Integer).
+     * ELIMINA un articulo por su ID (Integer).
      */
     @Override
     public void eliminar(Integer id) throws Exception {
@@ -159,9 +159,9 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
             ps.executeUpdate(); // Ejecutamos el borrado
 
         } catch (SQLException e) {
-            // Ojo: Si el artÃ­culo estÃ¡ en un Pedido, esto fallarÃ¡
+            // Ojo: Si el articulo esta en un Pedido, esto fallara
             // (por la FOREIGN KEY). Eso es bueno, se llama integridad referencial.
-            throw new Exception("Error al eliminar artÃ­culo: " + e.getMessage(), e);
+            throw new Exception("Error al eliminar articulo: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(ps);
             ConexionBD.cerrar(conn);
@@ -169,10 +169,10 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
     }
     
     /**
-     * ACTUALIZA un artÃ­culo existente en la base de datos.
+     * ACTUALIZA un articulo existente en la base de datos.
      * 
-     * Â¿QuÃ© actualiza?: DescripciÃ³n, precio, gastos envÃ­o y tiempo preparaciÃ³n
-     * Â¿QuÃ© NO actualiza?: El cÃ³digo_articulo (es la PRIMARY KEY, no se cambia)
+     * Que actualiza?: Descripcion, precio, gastos envio y tiempo preparacion
+     * Que NO actualiza?: El codigo_articulo (es la PRIMARY KEY, no se cambia)
      */
     @Override
     public void actualizar(Articulo articulo) throws Exception {
@@ -196,13 +196,13 @@ public class MySqlArticuloDAO implements Repositorio<Articulo, Integer> {
             int filasActualizadas = ps.executeUpdate();
             
             if (filasActualizadas == 0) {
-                throw new Exception("No se encontrÃ³ el artÃ­culo con cÃ³digo: " + articulo.getCodigoArticulo());
+                throw new Exception("No se encontro el articulo con codigo: " + articulo.getCodigoArticulo());
             }
             
-            System.out.println("âœ… ArtÃ­culo actualizado correctamente");
+            System.out.println("Articulo actualizado correctamente");
             
         } catch (SQLException e) {
-            throw new Exception("Error al actualizar artÃ­culo: " + e.getMessage(), e);
+            throw new Exception("Error al actualizar articulo: " + e.getMessage(), e);
         } finally {
             ConexionBD.cerrar(ps);
             ConexionBD.cerrar(conn);

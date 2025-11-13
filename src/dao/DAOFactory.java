@@ -5,9 +5,9 @@ import model.Cliente;
 import model.Pedido;
 
 /**
- * Esta es la FÃ¡brica de DAOs.
- * Es el Ãºnico lugar del programa que sabe que estamos usando MySQL.
- * Si maÃ±ana quisiÃ©ramos cambiar a Oracle, solo modificarÃ­amos esta clase.
+ * Esta es la Fabrica de DAOs.
+ * Es el unico lugar del programa que sabe que estamos usando MySQL.
+ * Si manana quisiéramos cambiar a Oracle, solo modificaríamos esta clase.
  */
 public class DAOFactory {
 
@@ -25,7 +25,7 @@ public class DAOFactory {
             // case 2:
                 // return new OracleArticuloDAO(); // Si existiera
             default:
-                throw new IllegalArgumentException("Tipo de persistencia no vÃ¡lido");
+                throw new IllegalArgumentException("Tipo de persistencia no valido");
         }
     }
 
@@ -34,7 +34,7 @@ public class DAOFactory {
             case 1:
                 return new MySqlClienteDAO();
             default:
-                throw new IllegalArgumentException("Tipo de persistencia no vÃ¡lido");
+                throw new IllegalArgumentException("Tipo de persistencia no valido");
         }
     }
 
@@ -43,7 +43,7 @@ public class DAOFactory {
             case 1:
                 return new MySqlPedidoDAO();
             default:
-                throw new IllegalArgumentException("Tipo de persistencia no vÃ¡lido");
+                throw new IllegalArgumentException("Tipo de persistencia no valido");
         }
     }
 }

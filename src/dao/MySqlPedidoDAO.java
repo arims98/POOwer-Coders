@@ -18,23 +18,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ImplementaciÃ³n de MySQL para el Repositorio de Pedidos.
+ * Implementacie³n de MySQL para el Repositorio de Pedidos.
  * Implementa Repositorio<Pedido, Integer> porque su ID es 'num_pedido' (Integer).
  */
 public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
 
     // DAOs para buscar los objetos Cliente y Articulo
-    // Pedimos a la fÃ¡brica que nos dÃ© los DAOs que necesitamos.
+    // Pedimos a la fabrica que nos de© los DAOs que necesitamos.
     private Repositorio<Cliente, String> clienteDAO = DAOFactory.getClienteDAO();
     private Repositorio<Articulo, Integer> articuloDAO = DAOFactory.getArticuloDAO();
 
 
     /**
      * Mapea una fila del ResultSet a un objeto Pedido completo.
-     * AquÃ­ es donde "reconstruimos" el pedido.
+     * Aque­ es donde "reconstruimos" el pedido.
      */
     private Pedido mapearPedido(ResultSet rs) throws Exception {
-        // 1. Obtenemos los IDs (claves forÃ¡neas) de la tabla Pedido
+        // 1. Obtenemos los IDs (claves foraneas) de la tabla Pedido
         int numPedido = rs.getInt("num_pedido");
         String clienteEmail = rs.getString("cliente_email");
         int articuloCodigo = rs.getInt("articulo_codigo");
@@ -55,9 +55,9 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
     /**
      * AGREGA un nuevo pedido a la base de datos.
      * AHORA USA TRANSACCIONES para garantizar la integridad.
-     * CALCULA el precio_total automÃ¡ticamente basado en el artÃ­culo y cantidad.
+     * CALCULA el precio_total automaticamente basado en el arte­culo y cantidad.
      * 
-     * Â¿Por quÃ© transacciones?: Si algo falla (ej: el artÃ­culo no existe),
+     * Por que© transacciones?: Si algo falla (ej: el arte­culo no existe),
      * se deshace todo y no queda basura en la BD.
      */
     @Override
@@ -69,7 +69,7 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
         try {
             conn = ConexionBD.getConexion();
             
-            // â­ INICIAR TRANSACCIÃ“N
+            // â­ INICIAR TRANSACCIe“N
             conn.setAutoCommit(false);
             
             // CALCULAR PRECIO TOTAL
@@ -81,7 +81,7 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             double subtotal = articulo.getPrecioVenta() * cantidad;
             double gastosEnvio = articulo.getGastosEnvio();
             
-            // Si es cliente Premium, aplicar descuento en envÃ­o
+            // Si es cliente Premium, aplicar descuento en enve­o
             if (cliente instanceof ClientePremium) {
                 ClientePremium premium = (ClientePremium) cliente;
                 double descuento = premium.getDescuentoEnvio() / 100.0;  // 20 -> 0.20
@@ -93,7 +93,7 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            // Asignamos los valores (Â¡usamos los IDs de los objetos!)
+            // Asignamos los valores (usamos los IDs de los objetos!)
             ps.setString(1, pedido.getCliente().getEmail());
             ps.setInt(2, pedido.getArticulo().getCodigoArticulo());
             ps.setInt(3, cantidad);
@@ -108,16 +108,16 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
                 pedido.setNumPedido(rsKeys.getInt(1));
             }
             
-            // â­ CONFIRMAR TRANSACCIÃ“N (todo OK)
+            // â­ CONFIRMAR TRANSACCIe“N (todo OK)
             conn.commit();
-            System.out.println("âœ… Pedido agregado con Ã©xito (Total: " + precioTotal + "â‚¬)");
+            System.out.println("… Pedido agregado con e©xito (Total: " + precioTotal + "â‚¬)");
 
         } catch (SQLException e) {
-            // â­ REVERTIR TRANSACCIÃ“N (algo fallÃ³)
+            // â­ REVERTIR TRANSACCIe“N (algo falle³)
             if (conn != null) {
                 try {
                     conn.rollback();
-                    System.out.println("âŒ Error: transacciÃ³n revertida");
+                    System.out.println("âŒ Error: transaccie³n revertida");
                 } catch (SQLException ex) {
                     System.err.println("Error al hacer rollback: " + ex.getMessage());
                 }
@@ -156,7 +156,7 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             if (rs.next()) {
                 return mapearPedido(rs); // Usamos el mapeador
             }
-            return null; // No se encontrÃ³
+            return null; // No se encontre³
 
         } catch (Exception e) { // Capturamos Exception (por el mapearPedido)
             throw new Exception("Error al buscar pedido: " + e.getMessage(), e);
@@ -221,20 +221,20 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
     }
     
     // =====================================================
-    // MÃ‰TODOS QUE USAN PROCEDIMIENTOS ALMACENADOS
+    // Me‰TODOS QUE USAN PROCEDIMIENTOS ALMACENADOS
     // =====================================================
     
     /**
      * CREA UN PEDIDO USANDO EL PROCEDIMIENTO ALMACENADO.
      * 
-     * Â¿QuÃ© hace?: Llama al procedimiento sp_agregar_pedido_completo
-     * Â¿Por quÃ© usarlo?: El procedimiento valida que cliente y artÃ­culo existan
-     *                   Y calcula el precio_total automÃ¡ticamente
+     * Que© hace?: Llama al procedimiento sp_agregar_pedido_completo
+     * Por que© usarlo?: El procedimiento valida que cliente y arte­culo existan
+     *                   Y calcula el precio_total automaticamente
      * 
      * @param clienteEmail Email del cliente
-     * @param articuloCodigo CÃ³digo del artÃ­culo
+     * @param articuloCodigo Ce³digo del arte­culo
      * @param cantidad Cantidad a pedir
-     * @return El nÃºmero del pedido creado (o 0 si hubo error)
+     * @return El neºmero del pedido creado (o 0 si hubo error)
      * @throws Exception si algo falla
      */
     public int agregarPedidoConProcedimiento(String clienteEmail, int articuloCodigo, int cantidad) throws Exception {
@@ -248,12 +248,12 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             conn = ConexionBD.getConexion();
             cs = conn.prepareCall(sql);
             
-            // ParÃ¡metros de ENTRADA (IN)
+            // Parametros de ENTRADA (IN)
             cs.setString(1, clienteEmail);      // p_cliente_email
             cs.setInt(2, articuloCodigo);       // p_articulo_codigo
             cs.setInt(3, cantidad);             // p_cantidad
             
-            // ParÃ¡metros de SALIDA (OUT)
+            // Parametros de SALIDA (OUT)
             cs.registerOutParameter(4, Types.INTEGER);    // p_num_pedido
             cs.registerOutParameter(5, Types.DECIMAL);    // p_precio_total
             cs.registerOutParameter(6, Types.VARCHAR);    // p_mensaje
@@ -268,7 +268,7 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             
             System.out.println("ðŸ“¦ Resultado del procedimiento: " + mensaje);
             
-            // Si el nÃºmero de pedido es 0, hubo un error
+            // Si el neºmero de pedido es 0, hubo un error
             if (numPedido == 0) {
                 throw new Exception(mensaje);
             }
@@ -286,10 +286,10 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
     /**
      * CALCULA EL TOTAL DE UN PEDIDO USANDO PROCEDIMIENTO ALMACENADO.
      * 
-     * Â¿QuÃ© hace?: Llama al procedimiento sp_calcular_total_pedido
-     * Â¿Por quÃ© usarlo?: Calcula precios con descuentos Premium automÃ¡ticamente
+     * Que© hace?: Llama al procedimiento sp_calcular_total_pedido
+     * Por que© usarlo?: Calcula precios con descuentos Premium automaticamente
      * 
-     * @param numPedido NÃºmero del pedido
+     * @param numPedido Neºmero del pedido
      * @return Array con [subtotal, gastos_envio, descuento, total]
      * @throws Exception si algo falla
      */
@@ -304,10 +304,10 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             conn = ConexionBD.getConexion();
             cs = conn.prepareCall(sql);
             
-            // ParÃ¡metro de ENTRADA (IN)
+            // Parametro de ENTRADA (IN)
             cs.setInt(1, numPedido);
             
-            // ParÃ¡metros de SALIDA (OUT)
+            // Parametros de SALIDA (OUT)
             cs.registerOutParameter(2, Types.DECIMAL);  // p_subtotal
             cs.registerOutParameter(3, Types.DECIMAL);  // p_gastos_envio
             cs.registerOutParameter(4, Types.DECIMAL);  // p_descuento
@@ -324,9 +324,9 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             double total = cs.getDouble(5);
             String mensaje = cs.getString(6);
             
-            System.out.println("ðŸ’° CÃ¡lculo del pedido: " + mensaje);
+            System.out.println("ðŸ’° Calculo del pedido: " + mensaje);
             System.out.println("   Subtotal: " + subtotal + "â‚¬");
-            System.out.println("   Gastos envÃ­o: " + gastosEnvio + "â‚¬");
+            System.out.println("   Gastos enve­o: " + gastosEnvio + "â‚¬");
             System.out.println("   Descuento: " + descuento + "â‚¬");
             System.out.println("   TOTAL: " + total + "â‚¬");
             
@@ -344,8 +344,8 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
     /**
      * ACTUALIZA un pedido existente en la base de datos.
      * 
-     * Â¿QuÃ© actualiza?: Cantidad y precio_total (se recalcula automÃ¡ticamente)
-     * Â¿QuÃ© NO actualiza?: El num_pedido (PK), cliente, artÃ­culo ni fecha
+     * Que© actualiza?: Cantidad y precio_total (se recalcula automaticamente)
+     * Que© NO actualiza?: El num_pedido (PK), cliente, arte­culo ni fecha
      * 
      * Casos de uso: Cambiar cantidad antes de procesar el pedido
      */
@@ -367,7 +367,7 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             double subtotal = articulo.getPrecioVenta() * cantidad;
             double gastosEnvio = articulo.getGastosEnvio();
             
-            // Si es cliente Premium, aplicar descuento en envÃ­o
+            // Si es cliente Premium, aplicar descuento en enve­o
             if (cliente instanceof ClientePremium) {
                 ClientePremium premium = (ClientePremium) cliente;
                 double descuento = premium.getDescuentoEnvio() / 100.0;
@@ -386,11 +386,11 @@ public class MySqlPedidoDAO implements Repositorio<Pedido, Integer> {
             int filasActualizadas = ps.executeUpdate();
             
             if (filasActualizadas == 0) {
-                throw new Exception("No se encontrÃ³ el pedido nÃºmero: " + pedido.getNumPedido());
+                throw new Exception("No se encontre³ el pedido neºmero: " + pedido.getNumPedido());
             }
             
-            pedido.setPrecioTotal(precioTotal);  // Actualizar el objeto tambiÃ©n
-            System.out.println("âœ… Pedido actualizado correctamente (Nuevo total: " + precioTotal + "â‚¬)");
+            pedido.setPrecioTotal(precioTotal);  // Actualizar el objeto tambie©n
+            System.out.println("… Pedido actualizado correctamente (Nuevo total: " + precioTotal + "â‚¬)");
             
         } catch (SQLException e) {
             throw new Exception("Error al actualizar pedido: " + e.getMessage(), e);
