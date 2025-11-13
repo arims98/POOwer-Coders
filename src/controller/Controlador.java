@@ -71,8 +71,7 @@ public class Controlador {
                     agregarArticulo();
                     break;
                 case 3:
-                    // eliminarArticulo(); // Tendrias que crear este metodo
-                    vista.mostrarMensaje("Funcionalidad no implementada aun.");
+                    eliminarArticulo();
                     break;
                 case 4:
                     vista.mostrarMensaje("Volviendo al menu principal...");
@@ -95,7 +94,7 @@ public class Controlador {
                     agregarCliente();
                     break;
                 case 3:
-                    // eliminarCliente(); // Tendrias que crear este metodo
+                    eliminarCliente();
                     break;
                 case 4:
                     vista.mostrarMensaje("Volviendo al menu principal...");
@@ -168,6 +167,18 @@ public class Controlador {
         }
     }
 
+    private void eliminarArticulo() {
+        vista.mostrarMensaje("\n--- ELIMINAR ARTICULO ---");
+        int codigoArticulo = vista.pedirInt("Introduce el codigo del articulo a eliminar: ");
+        
+        try {
+            datos.getRepoArticulo().eliminar(codigoArticulo);
+            vista.mostrarMensaje("Articulo No. " + codigoArticulo + " eliminado correctamente.");
+        } catch (Exception e) {
+            vista.mostrarMensaje("ERROR: El articulo no se pudo eliminar: " + e.getMessage());
+        }
+    }
+
     private void mostrarClientes() {
         vista.mostrarMensaje("\n--- LISTA DE CLIENTES ---");
         try {
@@ -208,6 +219,18 @@ public class Controlador {
             vista.mostrarMensaje("Cliente '" + nombre + "' creado correctamente.");
         } catch (Exception e) {
             vista.mostrarMensaje("Error al crear cliente: " + e.getMessage());
+        }
+    }
+
+    private void eliminarCliente() {
+        vista.mostrarMensaje("\n--- ELIMINAR CLIENTE ---");
+        String email = vista.pedirString("Introduce el email del cliente a eliminar: ");
+        
+        try {
+            datos.getRepoCliente().eliminar(email);
+            vista.mostrarMensaje("Cliente con email '" + email + "' eliminado correctamente.");
+        } catch (Exception e) {
+            vista.mostrarMensaje("ERROR: El cliente no se pudo eliminar: " + e.getMessage());
         }
     }
     
