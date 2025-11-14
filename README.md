@@ -1,4 +1,6 @@
 📦 Sistema de Gestión de Pedidos - Tienda Online (JDBC & MySQL)
+
+
 Este proyecto representa la evolución de un sistema de gestión de pedidos en Java, transformado para utilizar una base de datos relacional (MySQL) como su capa de persistencia, manteniendo los principios de diseño Modelo-Vista-Controlador (MVC) y Data Access Object (DAO).
 
 Requisitos y Tecnologías
