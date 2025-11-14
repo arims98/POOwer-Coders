@@ -5,6 +5,8 @@ package view;
 
 import controller.ArticuloControlador;
 import java.util.Scanner;
+import java.util.List;
+import model.Articulo;
 
 public class ArticuloVista {
     private final ArticuloControlador articuloCtrl;
@@ -22,14 +24,23 @@ public class ArticuloVista {
             System.out.println("2. Mostrar artículos");
             System.out.println("0. Volver al menú principal");
             System.out.print("Elige una opción: ");
-            opcion = sc.nextInt();
-            sc.nextLine();
 
+            if (sc.hasNextLine()) {
+                opcion = sc.nextInt();
+                sc.nextLine(); //Consumimos el salto de línea
+            } else {
+                System.out.println("Entrada no válida. Introduce un número.");
+                sc.nextLine();
+                opcion = -1;
+                continue;
+            }
             switch (opcion) {
                 case 1 -> { // Añadir artículo
                     try {
-                        System.out.print("Código: ");
+                        String siguienteCodigo = articuloCtrl.obtenerSiguienteCodigo();
+                        System.out.print("Código [" + siguienteCodigo + "]:");
                         String cod = sc.nextLine();
+                        if (cod.isBlank()) cod = siguienteCodigo;
                         System.out.print("Descripción: ");
                         String desc = sc.nextLine();
                         System.out.print("Precio venta: ");

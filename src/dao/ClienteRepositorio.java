@@ -22,7 +22,7 @@ public class ClienteRepositorio implements Repositorio<Cliente> {
     private static final String SQL_SELECT_ALL = "SELECT * FROM CLIENTE";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM CLIENTE WHERE nif = ?";
     private static final String SQL_DELETE = "DELETE FROM CLIENTE WHERE nif = ?";
-    private static final String SQL_CALL_TEST_DATA = "CALL SP_CARGAR_DATOS_PRUEBA()"; // Llama al mismo procedimiento que Articulo
+    
 
     /**
      * Helper para mapear un ResultSet a un objeto Cliente (Estandar o Premium)

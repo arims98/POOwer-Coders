@@ -8,8 +8,6 @@ import model.Cliente;
 import model.Articulo;
 import java.util.List;
 import java.util.Scanner;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 public class PedidoVista {
     // Declaración de controladores
@@ -50,8 +48,10 @@ public class PedidoVista {
             switch (opcion) {
                 case 1 -> { // Crear pedido
                     try {
-                        System.out.print("Número de pedido: ");
+                        String siguientePedido = pedidoCtrl.obtenerSiguienteNumeroPedido();
+                        System.out.print("Número de pedido [" + siguientePedido + "]:");
                         String num = sc.nextLine();
+                        if (num.isBlank()) num = siguientePedido;
                         System.out.print("NIF del cliente: ");
                         String nif = sc.nextLine();
                         Cliente cliente = clienteCtrl.listarClientes().stream()

@@ -16,8 +16,7 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Iniciando aplicación con persistencia MySQL/JDBC y patrón Factory...");
-
+        
         // ====================================================================
         // 1. Inicialización de la Fábrica DAO (DAOFactory)
         // Se instancia la fábrica específica de MySQL (MySQLDAOFactory)
@@ -30,12 +29,6 @@ public class Main {
         Repositorio<?> clienteRepo = factory.getClienteRepositorio();
         Repositorio<?> articuloRepo = factory.getArticuloRepositorio();
 
-        // Carga de datos de prueba iniciales (Artículos y Clientes)
-        // Se hace un casting para acceder al método específico que llama al Procedimiento Almacenado
-        if (articuloRepo instanceof ArticuloRepositorio) {
-            System.out.println("Cargando datos iniciales (Clientes y Artículos) mediante SP...");
-            ((ArticuloRepositorio) articuloRepo).cargarDatosPrueba();
-        }
 
 
         // 3. Controladores (Reciben las instancias de los Repositorios del Factory)
@@ -53,7 +46,7 @@ public class Main {
         
         // MENÚ PRINCIPAL
         do {
-            System.out.println("\n=== MENÚ PRINCIPAL ===");
+            System.out.println("\n=== ONLINE STORE ===");
             System.out.println("1. Gestión de Artículos");
             System.out.println("2. Gestión de Clientes");
             System.out.println("3. Gestión de Pedidos");

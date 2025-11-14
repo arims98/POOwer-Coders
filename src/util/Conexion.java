@@ -19,7 +19,6 @@ public class Conexion {
         try {
             // Carga explícita del driver
             Class.forName(DRIVER);
-            System.out.println("Driver JDBC de MySQL cargado correctamente.");
         } catch (ClassNotFoundException e) {
             System.err.println("ERROR: No se pudo cargar el driver JDBC.");
             e.printStackTrace();

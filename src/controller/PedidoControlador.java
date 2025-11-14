@@ -17,11 +17,28 @@ public class PedidoControlador {
         this.pedidoRepo = pedidoRepo;
     }
 
+    public String obtenerSiguienteNumeroPedido() {
+        int max = 0;
+        for (Pedido p : pedidoRepo.listar()) {
+            try {
+                int num = Integer.parseInt(p.getNumeroPedido());
+                if (num > max) max = num;
+            } catch (NumberFormatException e ) {
+                System.out.println("Número de pedido no válida (no númerico); " + p.getNumeroPedido());
+            }
+
+        }
+        return String.format("P%02d", max + 1);
+    }
+
     public void crearPedido(String numeroPedido, Cliente cliente, Articulo articulo, int cantidad) throws Exception {
         if (cantidad <= 0) {
             throw new Exception("La cantidad debe ser mayor que cero.");
         }
-        Pedido nuevoPedido = new Pedido(numeroPedido, cliente, articulo, cantidad, LocalDateTime.now());
+        String numeroFinal = (numeroPedido == null || numeroPedido.trim().isEmpty()) ?
+                             obtenerSiguienteNumeroPedido() :
+                             numeroPedido;
+        Pedido nuevoPedido = new Pedido(numeroFinal, cliente, articulo, cantidad, LocalDateTime.now());
         pedidoRepo.agregar(nuevoPedido);
     }
 
