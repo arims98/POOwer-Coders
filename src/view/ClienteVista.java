@@ -4,9 +4,8 @@
 package view;
 
 import controller.ClienteControlador;
-
-
 import java.util.Scanner;
+
 
 public class ClienteVista {
     private final ClienteControlador clienteCtrl;
@@ -45,7 +44,7 @@ public class ClienteVista {
                         clienteCtrl.agregarCliente(nombre, domicilio, nif, email, tipo);
                         System.out.println("Cliente añadido correctamente.");
                     } catch (Exception e) {
-                        System.out.println("⚠️ Error: " + e.getMessage());
+                        System.out.println("Error: " + e.getMessage());
                     }
                 }
                 case 2 -> { // Mostrar todos

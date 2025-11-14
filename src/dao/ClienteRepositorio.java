@@ -5,7 +5,6 @@ import util.Conexion;
 import model.Cliente;
 import model.ClienteEstandar;
 import model.ClientePremium;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Types;
+
 
 // Implementación del Repositorio de Clientes para MySQL
 public class ClienteRepositorio implements Repositorio<Cliente> {
@@ -148,11 +148,5 @@ public class ClienteRepositorio implements Repositorio<Cliente> {
         }
     }
 
-    /**
-     * Carga los datos de prueba llamando a un procedimiento almacenado
-     */
-    public void cargarDatosPrueba() {
-        // La carga de datos de cliente está incluida en el mismo SP que Articulo.
-        // Se llama desde el ArticuloRepositorio una sola vez para evitar duplicación.
-    }
+   
 }

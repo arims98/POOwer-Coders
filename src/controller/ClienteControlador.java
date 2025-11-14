@@ -43,4 +43,8 @@ public class ClienteControlador {
                 .filter(c -> c instanceof ClientePremium)
                 .collect(Collectors.toList());
     }
+    public void eliminar(String nif) throws Exception {
+        clienteRepo.eliminar(nif);
+        System.out.println("Cliente eliminado correctamente.");
+    }
 }

@@ -15,7 +15,7 @@ public class ArticuloRepositorio implements Repositorio<Articulo> {
     private static final String SQL_SELECT_ALL = "SELECT * FROM ARTICULO";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM ARTICULO WHERE codigo = ?";
     private static final String SQL_DELETE = "DELETE FROM ARTICULO WHERE codigo = ?";
-    private static final String SQL_CALL_TEST_DATA = "CALL SP_CARGAR_DATOS_PRUEBA()"; // Llamada a procedimiento
+    
 
     @Override
     public void agregar(Articulo articulo) {
@@ -127,22 +127,5 @@ public class ArticuloRepositorio implements Repositorio<Articulo> {
         }
     }
 
-    /**
-     * Carga los datos de prueba llamando a un procedimiento almacenado.
-     */
-    public void cargarDatosPrueba() {
-        Connection conn = null;
-        CallableStatement cs = null;
-        try {
-            conn = Conexion.getConnection();
-            cs = conn.prepareCall(SQL_CALL_TEST_DATA);
-            cs.executeUpdate();
-        } catch (SQLException e) {
-            // Este error puede ocurrir si los datos ya existen
-            System.err.println("Error al cargar datos de prueba para Artículo: " + e.getMessage());
-        } finally {
-            try { if (cs != null) cs.close(); } catch (SQLException e) { /* Ignorar */ }
-            Conexion.close(conn);
-        }
-    }
+   
 }

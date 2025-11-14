@@ -13,7 +13,7 @@ public class PedidoRepositorio implements Repositorio<Pedido> {
 
     // CONSULTAS SQL
     // Se utiliza el procedimiento almacenado para la inserción para aplicar transacciones
-    private static final String SQL_CALL_INSERT = "{CALL SP_INSERTAR_PEDIDO(?, ?, ?, ?)}";
+    private static final String SQL_CALL_INSERT = "{CALL SP_INSERTAR_PEDIDO(?, ?, ?, ?)}"; //Procedimiento para insertar pedido
     private static final String SQL_SELECT_ALL = "SELECT p.*, c.nombre, c.domicilio, c.email, c.tipo, a.descripcion, a.precio_venta, a.gastos_envio, a.tiempo_preparacion " +
                                                  "FROM PEDIDO p JOIN CLIENTE c ON p.cliente_nif = c.nif " +
                                                  "JOIN ARTICULO a ON p.articulo_codigo = a.codigo";
@@ -150,13 +150,5 @@ public class PedidoRepositorio implements Repositorio<Pedido> {
         }
     }
     
-    /**
-     * NOTA: La carga de datos de prueba de pedidos no se realiza aquí,
-     * ya que los pedidos de prueba originales usan LocalDateTime.now(),
-     * y el SP de datos de prueba solo inserta Clientes y Artículos.
-     * La lógica de Pedido de prueba se mantendrá en Main.java (o se simplificará).
-     */
-    public void cargarDatosPrueba() {
-        // No se realiza ninguna acción aquí. La lógica de Pedidos de prueba se maneja en Main.
-    }
+    
 }

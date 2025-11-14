@@ -4,8 +4,6 @@ import controller.ArticuloControlador;
 import controller.ClienteControlador;
 import controller.PedidoControlador;
 import dao.DAOFactory;
-import dao.Repositorio;
-import dao.ArticuloRepositorio;
 import dao.MySQLDAOFactory;
 import view.ArticuloVista;
 import view.ClienteVista;
@@ -17,21 +15,10 @@ public class Main {
 
     public static void main(String[] args) {
         
-        // ====================================================================
-        // 1. Inicialización de la Fábrica DAO (DAOFactory)
-        // Se instancia la fábrica específica de MySQL (MySQLDAOFactory)
-        // ====================================================================
         DAOFactory factory = new MySQLDAOFactory();
 
-        // 2. Obtener Repositorios (DAOs) a través de la fábrica
-        // El Controlador usa la interfaz 'Repositorio', desacoplándose de la implementación MySQL
-        Repositorio<?> pedidoRepo = factory.getPedidoRepositorio();
-        Repositorio<?> clienteRepo = factory.getClienteRepositorio();
-        Repositorio<?> articuloRepo = factory.getArticuloRepositorio();
 
-
-
-        // 3. Controladores (Reciben las instancias de los Repositorios del Factory)
+        // Controladores (Reciben las instancias de los Repositorios del Factory)
         PedidoControlador pedidoCtrl = new PedidoControlador(factory.getPedidoRepositorio());
         ClienteControlador clienteCtrl = new ClienteControlador(factory.getClienteRepositorio());
         ArticuloControlador articuloCtrl = new ArticuloControlador(factory.getArticuloRepositorio());
@@ -57,7 +44,7 @@ public class Main {
                 opcionPrincipal = sc.nextInt();
                 sc.nextLine(); // Consumir el salto de línea
             } else {
-                System.out.println("⚠️ Entrada no válida. Introduce un número.");
+                System.out.println("Entrada no válida. Introduce un número.");
                 sc.nextLine(); // Consumir la entrada no válida
                 opcionPrincipal = -1; // Opción que fuerza la repetición
                 continue;

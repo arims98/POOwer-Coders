@@ -5,8 +5,7 @@ package view;
 
 import controller.ArticuloControlador;
 import java.util.Scanner;
-import java.util.List;
-import model.Articulo;
+
 
 public class ArticuloVista {
     private final ArticuloControlador articuloCtrl;
