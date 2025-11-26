@@ -31,8 +31,11 @@ public class Conexion {
      * Establece y devuelve una nueva conexión a la base de datos.
      */
     public static Connection getConnection() throws SQLException {
+        Connection conn = DriverManager.getConnection(URL, USUARIO, CLAVE);
+        conn.setAutoCommit(false);//Desactivamos el autocommit para controlar las transacciones manualmente
         // Se conecta usando el DriverManager (el driver ya está registrado).
-        return DriverManager.getConnection(URL, USUARIO, CLAVE);
+        return conn;
+        
     }
 
     /**

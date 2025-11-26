@@ -44,7 +44,7 @@ public class ClienteRepositorio implements Repositorio<Cliente> {
     }
 
     @Override
-    public void agregar(Cliente cliente) {
+    public void agregar(Cliente cliente) throws Exception {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
@@ -70,8 +70,18 @@ public class ClienteRepositorio implements Repositorio<Cliente> {
             }
             
             ps.executeUpdate();
+
+            conn.commit();
+            System.out.println("Cliente " + cliente.getNif() + "agregado y transacción confirmada.");
         } catch (SQLException e) {
-            System.err.println("Error al insertar cliente: " + e.getMessage());
+            if (conn != null) {
+                try {
+                    System.err.println("Transacción fallida. Realizando ROLLBACK...");
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    System.err.println("Error al intentar ROLLBACK --" + ex.getMessage());
+                }
+            } throw new Exception ("Error al insertar cliente " + e.getMessage(), e);
         } finally {
             try { if (ps != null) ps.close(); } catch (SQLException e) { /* Ignorar */ }
             Conexion.close(conn);
