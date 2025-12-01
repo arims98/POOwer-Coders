@@ -6,9 +6,6 @@
 /bin/
 target/
 
-# Librerías locales
-lib/
-
 # Archivos temporales
 *.log
 *.tmp
