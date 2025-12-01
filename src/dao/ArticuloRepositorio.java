@@ -1,5 +1,6 @@
 package dao;
 
+// JPA imports
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import model.Articulo;
@@ -10,6 +11,7 @@ public class ArticuloRepositorio implements Repositorio<Articulo> {
 
     private final EntityManager em;
 
+    // Constructor
     public ArticuloRepositorio(EntityManager em) {
         this.em = em;
     }
@@ -22,7 +24,8 @@ public class ArticuloRepositorio implements Repositorio<Articulo> {
             em.persist(articulo);
             tx.commit();
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (tx.isActive())
+                tx.rollback();
             throw e;
         }
     }
@@ -49,7 +52,8 @@ public class ArticuloRepositorio implements Repositorio<Articulo> {
             }
             tx.commit();
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (tx.isActive())
+                tx.rollback();
             throw e;
         }
     }

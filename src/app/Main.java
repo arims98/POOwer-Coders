@@ -5,6 +5,7 @@ import controller.ClienteControlador;
 import controller.PedidoControlador;
 import dao.DAOFactory;
 import dao.MySQLDAOFactory;
+// JPA imports
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
