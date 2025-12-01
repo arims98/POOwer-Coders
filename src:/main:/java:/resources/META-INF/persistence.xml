@@ -1,0 +1,19 @@
+<persistence-unit name="MiUnidad" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+    <!-- Clases @Entity -->
+    <class>com.app.modelo.Articulo</class>
+    <class>com.app.modelo.Cliente</class>
+    <class>com.app.modelo.ClienteEstandar</class>
+    <class>com.app.modelo.ClientePremium</class>
+    <class>com.app.modelo.Pedido</class>
+
+    <properties>
+        <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/online_store_bd"/>
+        <property name="jakarta.persistence.jdbc.user" value="root"/>
+        <property name="jakarta.persistence.jdbc.password" value="rootroot"/>
+        <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="hibernate.hbm2ddl.auto" value="update"/>
+        <property name="hibernate.show_sql" value="true"/>
+    </properties>
+</persistence-unit>
