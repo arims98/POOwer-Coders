@@ -10,7 +10,7 @@ import java.util.List;
 public interface Repositorio<T> {
     //Agregar un elemento
     // Recibe un objeto de tipo T y lo añade al repositorio.
-    void agregar(T objeto);
+    void agregar(T t) throws Exception;
 
     // Buscar por ID
     // Busca un objeto por su identificador único, es decir, código, número de pedido o NIF

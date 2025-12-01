@@ -18,7 +18,7 @@ public class ArticuloRepositorio implements Repositorio<Articulo> {
     
 
     @Override
-    public void agregar(Articulo articulo) {
+    public void agregar(Articulo articulo) throws Exception {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
@@ -33,9 +33,18 @@ public class ArticuloRepositorio implements Repositorio<Articulo> {
             ps.setInt(5, articulo.getTiempoPreparacion());
             
             ps.executeUpdate();
+            
+            conn.commit();
+            System.out.println("Articulo " + articulo.getCodigo() + "agregado y transacción confirmada.");
         } catch (SQLException e) {
-            // Manejo de errores (por ejemplo, clave primaria duplicada)
-            System.err.println("Error al insertar artículo: " + e.getMessage());
+            if (conn != null) {
+                try {
+                    System.err.println("Transacción fallida. Realizando ROLLBACK...");
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    System.err.println("Error al intentar ROLLBACK --" + ex.getMessage());
+                }
+            } throw new Exception ("Error al insertar articulo " + e.getMessage(), e);
         } finally {
             // Cierre seguro de recursos
             try { if (ps != null) ps.close(); } catch (SQLException e) { /* Ignorar */ }
