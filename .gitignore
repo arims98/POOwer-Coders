@@ -12,6 +12,3 @@ target/
 
 # Configuración de VSCode
 .vscode/
-
-# Otros generados
-META-INF/
