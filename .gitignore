@@ -1,0 +1,38 @@
+# Compilados y salidas
+bin/
+out/
+build/
+target/
+
+# IDEs y metadatos
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+.vscode/
+
+# Sistemas
+.DS_Store
+Thumbs.db
+
+# Logs y temporales
+logs/
+*.log
+*.tmp
+*.swp
+
+# Herramientas Java
+.gradle/
+.mvn/
+**/.gradle/
+**/.mvn/
+
+# Credenciales/entornos (si existieran)
+.env
+.env.*
+
+# Cache varias
+**/.cache/
+
+# Nota: no ignoramos lib/ porque puede contener dependencias necesarias en el repo
