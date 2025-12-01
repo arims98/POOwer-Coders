@@ -6,7 +6,6 @@ package view;
 import controller.ArticuloControlador;
 import java.util.Scanner;
 
-
 public class ArticuloVista {
     private final ArticuloControlador articuloCtrl;
 
@@ -26,7 +25,7 @@ public class ArticuloVista {
 
             if (sc.hasNextLine()) {
                 opcion = sc.nextInt();
-                sc.nextLine(); //Consumimos el salto de línea
+                sc.nextLine(); // Consumimos el salto de línea
             } else {
                 System.out.println("Entrada no válida. Introduce un número.");
                 sc.nextLine();
@@ -34,12 +33,13 @@ public class ArticuloVista {
                 continue;
             }
             switch (opcion) {
-                case 1 -> { // Añadir artículo
+                case 1: // Añadir artículo
                     try {
                         String siguienteCodigo = articuloCtrl.obtenerSiguienteCodigo();
                         System.out.print("Código [" + siguienteCodigo + "]:");
                         String cod = sc.nextLine();
-                        if (cod.isBlank()) cod = siguienteCodigo;
+                        if (cod.isBlank())
+                            cod = siguienteCodigo;
                         System.out.print("Descripción: ");
                         String desc = sc.nextLine();
                         System.out.print("Precio venta: ");
@@ -53,13 +53,17 @@ public class ArticuloVista {
                     } catch (Exception e) {
                         System.out.println("⚠️ Error al añadir artículo: " + e.getMessage());
                     }
-                }
-                case 2 -> { // Mostrar todos los artículos
+                    break;
+                case 2: // Mostrar todos los artículos
                     System.out.println("\n=== LISTADO DE ARTÍCULOS ===");
                     articuloCtrl.listarArticulos().forEach(System.out::println);
-                }
-                case 0 -> System.out.println("Volviendo al menú principal...");
-                default -> System.out.println("Opción incorrecta.");
+                    break;
+                case 0:
+                    System.out.println("Volviendo al menú principal...");
+                    break;
+                default:
+                    System.out.println("Opción incorrecta.");
+                    break;
             }
         } while (opcion != 0);
     }
