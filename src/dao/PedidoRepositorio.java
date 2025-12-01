@@ -54,7 +54,7 @@ public class PedidoRepositorio implements Repositorio<Pedido> {
     }
 
     @Override
-    public void agregar(Pedido pedido) {
+    public void agregar(Pedido pedido) throws Exception {
         Connection conn = null;
         CallableStatement cs = null;
         try {
@@ -67,12 +67,25 @@ public class PedidoRepositorio implements Repositorio<Pedido> {
             cs.setString(2, pedido.getCliente().getNif());
             cs.setString(3, pedido.getArticulo().getCodigo());
             cs.setInt(4, pedido.getCantidad());
-            
+
             cs.executeUpdate();
-            System.out.println("Pedido " + pedido.getNumeroPedido() + " agregado usando Transacción.");
+
+            //Si todo va bien, confirmamos la transacción
+            conn.commit();
+            System.out.println("Pedido: " + pedido.getNumeroPedido() + "agregado y transacción confirmada.");
 
         } catch (SQLException e) {
-            System.err.println("Error al insertar pedido (transacción fallida): " + e.getMessage());
+            //Si algo falla, revertimos la transacción
+            if (conn != null) {
+                try {
+                    System.err.println("Transacción fallida. Realizando ROLLBACK...");
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    System.err.println("Error al intentar ROLLBACK - " + ex.getMessage());
+                }
+            }
+            //Propagamos la exception para que el controlador pueda manejarla
+            throw new Exception("Error al insertar pedido: " + e.getMessage(), e);
         } finally {
             try { if (cs != null) cs.close(); } catch (SQLException e) { /* Ignorar */ }
             Conexion.close(conn);
