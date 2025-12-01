@@ -1,16 +1,35 @@
-//Modelo: Contiene la lógica y los datos esenciales de la aplicación.
-//Representa el estado de la aplicación y reglas de negocio. Puede usar DAO para manipular la persistencia de datos.
 package model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "PEDIDO")
 public class Pedido {
+
+    @Id
+    @Column(name = "numero_pedido")
     private String numeroPedido;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_nif", nullable = false)
     private Cliente cliente;
+
+    @ManyToOne
+    @JoinColumn(name = "articulo_codigo", nullable = false)
     private Articulo articulo;
+
+    @Column(name = "cantidad")
     private int cantidad;
+
+    @Column(name = "fecha_hora")
     private LocalDateTime fechaHora;
+
+    @Column(name = "estado")
     private String estado;
+
+    // Constructor vacío obligatorio para JPA
+    public Pedido() {}
 
     // Constructor completo
     public Pedido(String numeroPedido, Cliente cliente, Articulo articulo, int cantidad, LocalDateTime fechaHora, String estado) {
@@ -22,28 +41,27 @@ public class Pedido {
         this.estado = estado;
     }
 
-    // Constructor de estado por defecto
+    // Constructor con estado por defecto
     public Pedido(String numeroPedido, Cliente cliente, Articulo articulo, int cantidad, LocalDateTime fechaHora) {
         this(numeroPedido, cliente, articulo, cantidad, fechaHora, "Pendiente de envío");
     }
 
     // Getters y setters
-    //NumeroPedido
-    public String getNumeroPedido() { return this.numeroPedido; }
+    public String getNumeroPedido() { return numeroPedido; }
     public void setNumeroPedido(String numeroPedido) { this.numeroPedido = numeroPedido; }
-    //Cliente
-    public Cliente getCliente() { return this.cliente; }
+
+    public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
-    //Articulo
-    public Articulo getArticulo() { return this.articulo; }
+
+    public Articulo getArticulo() { return articulo; }
     public void setArticulo(Articulo articulo) { this.articulo = articulo; }
-    //Cantidad
-    public int getCantidad() { return this.cantidad; }
+
+    public int getCantidad() { return cantidad; }
     public void setCantidad(int cantidad) { this.cantidad = cantidad; }
-    //Fecha
-    public LocalDateTime getFechaHora() { return this.fechaHora; }
+
+    public LocalDateTime getFechaHora() { return fechaHora; }
     public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
-    //Estado de envio
+
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
 

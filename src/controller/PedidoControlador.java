@@ -4,6 +4,8 @@ import dao.Repositorio;
 import model.Pedido;
 import model.Cliente;
 import model.Articulo;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +22,14 @@ public class PedidoControlador {
     public String obtenerSiguienteNumeroPedido() {
         int max = 0;
         for (Pedido p : pedidoRepo.listar()) {
-            try {
-                int num = Integer.parseInt(p.getNumeroPedido());
-                if (num > max) max = num;
-            } catch (NumberFormatException e ) {
-                System.out.println("Número de pedido no válida (no númerico); " + p.getNumeroPedido());
-            }
+            String codigo = p.getNumeroPedido(); // Ej: "P01"
 
+            if (codigo != null && codigo.matches("P\\d+")) {
+                int num = Integer.parseInt(codigo.substring(1)); // Ignora la P
+                if (num > max) max = num;
+            } else {
+                System.out.println("Número de pedido inválido: " + codigo);
+            }
         }
         return String.format("P%02d", max + 1);
     }
@@ -56,17 +59,17 @@ public class PedidoControlador {
 
     public void eliminarPedido(String numeroPedido) throws Exception {
         Pedido pedido = buscarPedido(numeroPedido);
+
         if (pedido == null) {
             throw new Exception("Pedido no encontrado.");
         }
 
-        long diffMinutos = java.time.Duration.between(pedido.getFechaHora(), LocalDateTime.now()).toMinutes();
-        if (diffMinutos >= pedido.getArticulo().getTiempoPreparacion()) {
-            throw new Exception("No se puede eliminar. El pedido ya ha pasado su tiempo de preparación y se asume enviado.");
+        // REGLA: solo puede eliminarse si está pendiente
+        if (!"Pendiente de envío".equalsIgnoreCase(pedido.getEstado())) {
+            throw new Exception("No se puede eliminar un pedido que ya está enviado.");
         }
 
-        // Llamada al DAO/Repositorio para ejecutar la eliminación por ID
-        pedidoRepo.eliminar(numeroPedido); 
+        pedidoRepo.eliminar(numeroPedido);
     }
 
     public List<Pedido> listarPedidosPendientes() {
@@ -77,8 +80,9 @@ public class PedidoControlador {
 
     public List<Pedido> listarPedidosEnviados() {
         return pedidoRepo.listar().stream()
-                .filter(p -> java.time.Duration.between(p.getFechaHora(), LocalDateTime.now()).toMinutes() >= p.getArticulo().getTiempoPreparacion())
-                .peek(p -> p.setEstado("Enviado")) 
+                .filter(p -> java.time.Duration.between(
+                        p.getFechaHora(), LocalDateTime.now()
+                ).toMinutes() >= p.getArticulo().getTiempoPreparacion())
                 .collect(Collectors.toList());
     }
 

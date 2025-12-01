@@ -1,23 +1,27 @@
 package dao;
-import model.Articulo;
-import model.Cliente;
-import model.Pedido;
 
-// Implementación concreta de la fábrica para MySQL
-public class MySQLDAOFactory implements DAOFactory {
-    
-    @Override
-    public Repositorio<Articulo> getArticuloRepositorio() {
-        return new ArticuloRepositorio();
+import jakarta.persistence.EntityManager;
+
+public class MySQLDAOFactory extends DAOFactory {
+
+    private final EntityManager em;
+
+    public MySQLDAOFactory(EntityManager em) {
+        this.em = em;
     }
 
     @Override
-    public Repositorio<Cliente> getClienteRepositorio() {
-        return new ClienteRepositorio();
+    public Repositorio getArticuloRepositorio() {
+        return new ArticuloRepositorio(em);
     }
 
     @Override
-    public Repositorio<Pedido> getPedidoRepositorio() {
-        return new PedidoRepositorio();
+    public Repositorio getClienteRepositorio() {
+        return new ClienteRepositorio(em);
+    }
+
+    @Override
+    public Repositorio getPedidoRepositorio() {
+        return new PedidoRepositorio(em);
     }
 }

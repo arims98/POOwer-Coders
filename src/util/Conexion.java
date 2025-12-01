@@ -10,7 +10,7 @@ public class Conexion {
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver"; 
     private static final String URL = "jdbc:mysql://localhost:3306/online_store_bd";
     private static final String USUARIO = "root"; 
-    private static final String CLAVE = "rootroot"; 
+    private static final String CLAVE = "1234";
 
     private Conexion() {}
 
