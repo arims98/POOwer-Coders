@@ -34,24 +34,25 @@ public class PedidoVista {
             System.out.println("6. Mostrar pedidos enviados");
             System.out.println("0. Volver al menú principal");
             System.out.print("Elige una opción: ");
-            
+
             if (sc.hasNextInt()) {
                 opcion = sc.nextInt();
                 sc.nextLine(); // Consumir el salto de línea
             } else {
                 System.out.println("⚠️ Entrada no válida. Introduce un número.");
-                sc.nextLine(); 
-                opcion = -1; 
+                sc.nextLine();
+                opcion = -1;
                 continue;
             }
 
             switch (opcion) {
-                case 1 -> { // Crear pedido
+                case 1: { // Crear pedido
                     try {
                         String siguientePedido = pedidoCtrl.obtenerSiguienteNumeroPedido();
                         System.out.print("Número de pedido [" + siguientePedido + "]:");
                         String num = sc.nextLine();
-                        if (num.isBlank()) num = siguientePedido;
+                        if (num.isBlank())
+                            num = siguientePedido;
                         System.out.print("NIF del cliente: ");
                         String nif = sc.nextLine();
                         Cliente cliente = clienteCtrl.listarClientes().stream()
@@ -70,13 +71,13 @@ public class PedidoVista {
                             String email = sc.nextLine();
                             System.out.print("Tipo (E/P): ");
                             String tipo = sc.nextLine();
-                            
+
                             // Agrega el cliente y luego lo busca (necesario si el DAO asigna un ID)
                             clienteCtrl.agregarCliente(nombre, domicilio, nif, email, tipo);
                             cliente = clienteCtrl.listarClientes().stream()
                                     .filter(c -> c.getNif().equalsIgnoreCase(nif))
                                     .findFirst().orElse(null);
-                            
+
                             if (cliente == null) {
                                 // Esto solo debería ocurrir si el DAO falla en la inserción
                                 throw new Exception("Error al obtener el cliente recién creado.");
@@ -88,7 +89,7 @@ public class PedidoVista {
                         Articulo articulo = articuloCtrl.listarArticulos().stream()
                                 .filter(a -> a.getCodigo().equalsIgnoreCase(cod))
                                 .findFirst().orElse(null);
-                        
+
                         if (articulo == null) {
                             System.out.println("El artículo no existe.");
                             break;
@@ -97,38 +98,44 @@ public class PedidoVista {
                         System.out.print("Cantidad: ");
                         int cant = sc.nextInt();
                         sc.nextLine();
-                        
+
                         pedidoCtrl.crearPedido(num, cliente, articulo, cant);
                         System.out.println("✅ Pedido creado correctamente.");
                     } catch (Exception e) {
                         System.out.println("❌ Error: " + e.getMessage());
                     }
+                    break;
                 }
-                case 2 -> { // Listar pedidos
+                case 2: { // Listar pedidos
                     System.out.println("\n=== LISTADO DE PEDIDOS ===");
                     pedidoCtrl.listarPedidos().forEach(System.out::println);
+                    break;
                 }
-                case 3 -> { // Buscar pedido
+                case 3: { // Buscar pedido
                     System.out.print("Número de pedido: ");
                     String num = sc.nextLine();
                     Pedido p = pedidoCtrl.buscarPedido(num);
                     System.out.println(p != null ? p : "Pedido no encontrado.");
+                    break;
                 }
-                case 4 -> { // Eliminar pedido (Corregido: Eliminada lógica duplicada y añadido try-catch)
+                case 4: { // Eliminar pedido (Corregido: Eliminada lógica duplicada y añadido try-catch)
                     System.out.print("Número de pedido a eliminar: ");
                     String num = sc.nextLine();
-                    
+
                     try {
-                        // Llamamos al controlador, el cual es responsable de la lógica de negocio (validar tiempo)
-                        pedidoCtrl.eliminarPedido(num); 
+                        // Llamamos al controlador, el cual es responsable de la lógica de negocio
+                        // (validar tiempo)
+                        pedidoCtrl.eliminarPedido(num);
                         System.out.println("✅ Pedido " + num + " eliminado correctamente.");
-                        
+
                     } catch (Exception e) {
-                        // El controlador lanza la excepción si no existe, si ya se envió, o por error de DB.
+                        // El controlador lanza la excepción si no existe, si ya se envió, o por error
+                        // de DB.
                         System.out.println("❌ ERROR al eliminar pedido: " + e.getMessage());
                     }
+                    break;
                 }
-                case 5 -> { // Pedidos pendientes
+                case 5: { // Pedidos pendientes
                     System.out.println("\n=== PEDIDOS PENDIENTES DE ENVÍO ===");
                     System.out.print("Filtrar por NIF cliente (S/N): ");
                     String filtrar = sc.nextLine();
@@ -140,8 +147,9 @@ public class PedidoVista {
                     } else {
                         pedidoCtrl.listarPedidosPendientes().forEach(System.out::println);
                     }
+                    break;
                 }
-                case 6 -> { // Pedidos enviados
+                case 6: { // Pedidos enviados
                     System.out.println("\n=== PEDIDOS ENVIADOS ===");
                     System.out.print("Filtrar por NIF cliente (S/N): ");
                     String filtrar = sc.nextLine();
@@ -153,9 +161,14 @@ public class PedidoVista {
                     } else {
                         pedidoCtrl.listarPedidosEnviados().forEach(System.out::println);
                     }
+                    break;
                 }
-                case 0 -> System.out.println("Volviendo al menú principal...");
-                default -> System.out.println("Opción incorrecta.");
+                case 0: { // Volver
+                    break;
+                }
+                default: {
+                    System.out.println("Opción incorrecta.");
+                }
             }
         } while (opcion != 0);
     }

@@ -1,0 +1,14 @@
+# IDE
+.idea/
+*.iml
+
+# Compilados
+/bin/
+target/
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Configuración de VSCode
+.vscode/

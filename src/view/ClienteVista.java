@@ -6,7 +6,6 @@ package view;
 import controller.ClienteControlador;
 import java.util.Scanner;
 
-
 public class ClienteVista {
     private final ClienteControlador clienteCtrl;
 
@@ -29,7 +28,7 @@ public class ClienteVista {
             sc.nextLine();
 
             switch (opcion) {
-                case 1 -> { // Añadir cliente
+                case 1: { // Añadir cliente
                     try {
                         System.out.print("Nombre: ");
                         String nombre = sc.nextLine();
@@ -46,21 +45,27 @@ public class ClienteVista {
                     } catch (Exception e) {
                         System.out.println("Error: " + e.getMessage());
                     }
+                    break;
                 }
-                case 2 -> { // Mostrar todos
+                case 2: { // Mostrar todos
                     System.out.println("\n=== LISTADO DE CLIENTES ===");
                     clienteCtrl.listarClientes().forEach(System.out::println);
+                    break;
                 }
-                case 3 -> { // Clientes Estándar
+                case 3: { // Clientes Estándar
                     System.out.println("\n=== CLIENTES ESTÁNDAR ===");
                     clienteCtrl.listarClientesEstandar().forEach(System.out::println);
+                    break;
                 }
-                case 4 -> { // Clientes Premium
+                case 4: { // Clientes Premium
                     System.out.println("\n=== CLIENTES PREMIUM ===");
                     clienteCtrl.listarClientesPremium().forEach(System.out::println);
+                    break;
                 }
-                case 0 -> System.out.println("Volviendo al menú principal...");
-                default -> System.out.println("Opción incorrecta.");
+                case 0: // Volver
+                    break;
+                default:
+                    System.out.println("Opción incorrecta.");
             }
         } while (opcion != 0);
     }

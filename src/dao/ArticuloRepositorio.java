@@ -1,140 +1,60 @@
 package dao;
 
-import util.Conexion;
+// JPA imports
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import model.Articulo;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
-// Implementación del Repositorio de Artículos para MySQL
 public class ArticuloRepositorio implements Repositorio<Articulo> {
 
-    // CONSULTAS SQL
-    private static final String SQL_INSERT = "INSERT INTO ARTICULO (codigo, descripcion, precio_venta, gastos_envio, tiempo_preparacion) VALUES (?, ?, ?, ?, ?)";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM ARTICULO";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM ARTICULO WHERE codigo = ?";
-    private static final String SQL_DELETE = "DELETE FROM ARTICULO WHERE codigo = ?";
-    
+    private final EntityManager em;
+
+    // Constructor
+    public ArticuloRepositorio(EntityManager em) {
+        this.em = em;
+    }
 
     @Override
-    public void agregar(Articulo articulo) throws Exception {
-        Connection conn = null;
-        PreparedStatement ps = null;
+    public void agregar(Articulo articulo) {
+        EntityTransaction tx = em.getTransaction();
         try {
-            conn = Conexion.getConnection();
-            ps = conn.prepareStatement(SQL_INSERT);
-            
-            // Uso de PreparedStatement para prevenir SQL Injection
-            ps.setString(1, articulo.getCodigo());
-            ps.setString(2, articulo.getDescripcion());
-            ps.setDouble(3, articulo.getPrecioVenta());
-            ps.setDouble(4, articulo.getGastosEnvio());
-            ps.setInt(5, articulo.getTiempoPreparacion());
-            
-            ps.executeUpdate();
-            
-            conn.commit();
-            System.out.println("Articulo " + articulo.getCodigo() + "agregado y transacción confirmada.");
-        } catch (SQLException e) {
-            if (conn != null) {
-                try {
-                    System.err.println("Transacción fallida. Realizando ROLLBACK...");
-                    conn.rollback();
-                } catch (SQLException ex) {
-                    System.err.println("Error al intentar ROLLBACK --" + ex.getMessage());
-                }
-            } throw new Exception ("Error al insertar articulo " + e.getMessage(), e);
-        } finally {
-            // Cierre seguro de recursos
-            try { if (ps != null) ps.close(); } catch (SQLException e) { /* Ignorar */ }
-            Conexion.close(conn);
+            tx.begin();
+            em.persist(articulo);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive())
+                tx.rollback();
+            throw e;
         }
     }
 
     @Override
     public Articulo buscarPorId(String codigo) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Articulo articulo = null;
-        try {
-            conn = Conexion.getConnection();
-            ps = conn.prepareStatement(SQL_SELECT_BY_ID);
-            ps.setString(1, codigo);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                // Mapeo de ResultSet a objeto Articulo
-                articulo = new Articulo(
-                    rs.getString("codigo"),
-                    rs.getString("descripcion"),
-                    rs.getDouble("precio_venta"),
-                    rs.getDouble("gastos_envio"),
-                    rs.getInt("tiempo_preparacion")
-                );
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al buscar artículo: " + e.getMessage());
-        } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException e) { /* Ignorar */ }
-            try { if (ps != null) ps.close(); } catch (SQLException e) { /* Ignorar */ }
-            Conexion.close(conn);
-        }
-        return articulo;
+        return em.find(Articulo.class, codigo);
     }
 
     @Override
     public List<Articulo> listar() {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Articulo> articulos = new ArrayList<>();
-        try {
-            conn = Conexion.getConnection();
-            ps = conn.prepareStatement(SQL_SELECT_ALL);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Articulo articulo = new Articulo(
-                    rs.getString("codigo"),
-                    rs.getString("descripcion"),
-                    rs.getDouble("precio_venta"),
-                    rs.getDouble("gastos_envio"),
-                    rs.getInt("tiempo_preparacion")
-                );
-                articulos.add(articulo);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al listar artículos: " + e.getMessage());
-        } finally {
-            try { if (rs != null) rs.close(); } catch (SQLException e) { /* Ignorar */ }
-            try { if (ps != null) ps.close(); } catch (SQLException e) { /* Ignorar */ }
-            Conexion.close(conn);
-        }
-        return articulos;
+        return em.createQuery("SELECT a FROM Articulo a", Articulo.class)
+                .getResultList();
     }
 
     @Override
     public void eliminar(String codigo) {
-        Connection conn = null;
-        PreparedStatement ps = null;
+        EntityTransaction tx = em.getTransaction();
         try {
-            conn = Conexion.getConnection();
-            ps = conn.prepareStatement(SQL_DELETE);
-            ps.setString(1, codigo);
-            
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                System.out.println("No se encontró el artículo con código: " + codigo);
+            tx.begin();
+            Articulo existente = em.find(Articulo.class, codigo);
+            if (existente != null) {
+                em.remove(existente);
             }
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar artículo: " + e.getMessage());
-        } finally {
-            try { if (ps != null) ps.close(); } catch (SQLException e) { /* Ignorar */ }
-            Conexion.close(conn);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive())
+                tx.rollback();
+            throw e;
         }
     }
-
-   
 }
