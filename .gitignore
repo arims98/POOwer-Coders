@@ -12,3 +12,5 @@ target/
 
 # Configuración de VSCode
 .vscode/
+
+src/app/oracleJdk-25/
