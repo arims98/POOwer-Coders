@@ -1,14 +1,13 @@
 package controller;
 
-import dao.Repositorio;
-import model.Pedido;
-import model.Cliente;
-import model.Articulo;
-
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import dao.Repositorio;
+import model.Articulo;
+import model.Cliente;
+import model.Pedido;
 
 public class PedidoControlador {
     
@@ -79,11 +78,9 @@ public class PedidoControlador {
     }
 
     public List<Pedido> listarPedidosEnviados() {
-        return pedidoRepo.listar().stream()
-                .filter(p -> java.time.Duration.between(
-                        p.getFechaHora(), LocalDateTime.now()
-                ).toMinutes() >= p.getArticulo().getTiempoPreparacion())
-                .collect(Collectors.toList());
+    return pedidoRepo.listar().stream()
+            .filter(p -> "Enviado".equalsIgnoreCase(p.getEstado()))
+            .collect(Collectors.toList());
     }
 
     public List<Pedido> listarPedidosPendientesPorCliente(String nifCliente) {

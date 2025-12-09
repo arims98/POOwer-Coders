@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.PedidoControllerFX"
+      style="-fx-padding: 15;"
+      stylesheets="@styles.css">
+
+    <!-- Imagen del logo centrada encima del título -->
+    <ImageView fx:id="logo" fitHeight="80" fitWidth="80">
+        <image>
+            <Image url="@../images/logo.png"/>
+        </image>
+    </ImageView>
+
+    <!-- Título principal -->
+    <Label text="ONLINE STORE" styleClass="title"/>
+
+    <Separator prefWidth="200"/>
+
+    <Label text="Gestión de Pedidos" styleClass="subtitle"/>
+
+    <HBox spacing="10">
+        <TextField fx:id="numPedidoField" promptText="Número de pedido"/>
+        <TextField fx:id="nifClienteField" promptText="NIF Cliente"/>
+        <TextField fx:id="codArticuloField" promptText="Código Artículo"/>
+        <TextField fx:id="cantidadField" promptText="Cantidad"/>
+        <Button text="Crear Pedido" onAction="#crearPedido"/>
+    </HBox>
+
+    <TableView fx:id="tablaPedidos" prefHeight="300" prefWidth="800">
+        <columns>
+            <TableColumn text="Pedido" fx:id="colNumero"/>
+            <TableColumn text="Cliente" fx:id="colCliente"/>
+            <TableColumn text="Artículo" fx:id="colArticulo"/>
+            <TableColumn text="Cantidad" fx:id="colCantidad"/>
+            <TableColumn text="Estado" fx:id="colEstado"/>
+        </columns>
+    </TableView>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10" prefWidth="600">
+        <Button text="Eliminar Pedido" onAction="#eliminarPedido"/>
+        <Button text="Buscar Pedido" onAction="#buscarPedido"/>
+        <Button text="Mostrar Pendientes" onAction="#mostrarPendientes"/>
+        <Button text="Mostrar Enviados" onAction="#mostrarEnviados"/>
+        <Button text="Mostrar Todos" onAction="#mostrarTodos"/>
+    </HBox>
+</VBox>

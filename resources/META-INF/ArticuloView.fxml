@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.ArticuloControllerFX"
+      style="-fx-padding: 15;"
+      stylesheets="@styles.css">
+    
+    <!-- Logo -->
+    <ImageView fx:id="logo" fitHeight="80" fitWidth="80">
+        <image>
+            <Image url="@../images/logo.png"/>
+        </image>
+    </ImageView>
+
+    <!-- Título -->
+    <Label text="ONLINE STORE" styleClass="title"/>
+    <Separator prefWidth="200"/>
+    <Label text="Gestión de Artículos" styleClass="subtitle"/>
+    
+    <!-- Campos y botón Añadir -->
+    <HBox spacing="10">
+        <TextField fx:id="codigoField" promptText="Código"/>
+        <TextField fx:id="descripcionField" promptText="Descripción"/>
+        <TextField fx:id="precioField" promptText="Precio"/>
+        <TextField fx:id="envioField" promptText="Gastos envío"/>
+        <TextField fx:id="tiempoField" promptText="Tiempo preparación"/>
+        <Button text="Añadir Artículo" onAction="#agregarArticulo"/>
+    </HBox>
+
+    <!-- Tabla -->
+    <TableView fx:id="tablaArticulos" prefHeight="300" prefWidth="600">
+        <columns>
+            <TableColumn text="Código" fx:id="colCodigo"/>
+            <TableColumn text="Descripción" fx:id="colDescripcion"/>
+            <TableColumn text="Precio" fx:id="colPrecio"/>
+            <TableColumn text="Gastos Envío" fx:id="colEnvio"/>
+            <TableColumn text="Tiempo (min)" fx:id="colTiempo"/>
+        </columns>
+    </TableView>
+
+    <!-- Botón Eliminar alineado a la derecha -->
+    <HBox alignment="CENTER_RIGHT" prefWidth="600">
+        <Button text="Eliminar Artículo" onAction="#eliminarArticulo"/>
+    </HBox>
+
+</VBox>

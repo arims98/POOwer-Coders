@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.ClienteControllerFX"
+      style="-fx-padding: 15;"
+      stylesheets="@styles.css">
+
+    <!-- Imagen del logo centrada encima del título -->
+    <ImageView fx:id="logo" fitHeight="80" fitWidth="80">
+        <image>
+            <Image url="@../images/logo.png"/>
+        </image>
+    </ImageView>
+
+    <!-- Título principal -->
+    <Label text="ONLINE STORE" styleClass="title"/>
+
+    <Separator prefWidth="200"/>
+
+    <Label text="Gestión de Clientes" styleClass="subtitle"/>
+    
+    <HBox spacing="10">
+        <TextField fx:id="nombreField" promptText="Nombre"/>
+        <TextField fx:id="domicilioField" promptText="Domicilio"/>
+        <TextField fx:id="nifField" promptText="NIF"/>
+        <TextField fx:id="emailField" promptText="Email"/>
+        <TextField fx:id="tipoField" promptText="Tipo (E/P)"/>
+        <Button text="Añadir Cliente" onAction="#agregarCliente"/>
+    </HBox>
+
+    <TableView fx:id="tablaClientes" prefHeight="300" prefWidth="700">
+        <columns>
+            <TableColumn text="Nombre" fx:id="colNombre"/>
+            <TableColumn text="Domicilio" fx:id="colDomicilio"/>
+            <TableColumn text="NIF" fx:id="colNif"/>
+            <TableColumn text="Email" fx:id="colEmail"/>
+            <TableColumn text="Tipo" fx:id="colTipo"/>
+        </columns>
+    </TableView>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10" prefWidth="600">
+        <Button text="Eliminar Cliente" onAction="#eliminarCliente"/>
+        <Button text="Mostrar Premium" onAction="#mostrarPremium"/>
+        <Button text="Mostrar Estándar" onAction="#mostrarEstandar"/>
+        <Button text="Mostrar Todos" onAction="#mostrarTodos"/>
+    </HBox>
+
+</VBox>

@@ -1,0 +1,126 @@
+/* estilos.css */
+
+/* Fondo general de la aplicación */
+.root {
+    -fx-background-color: white;
+    -fx-padding: 15;
+}
+
+/* Título principal */
+.label.title {
+    -fx-text-fill: #326C89; /* azul claro */
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* Título principal */
+.label.subtitle {
+    -fx-text-fill: #326C89; /* azul claro */
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+
+/* Botones */
+.button {
+    -fx-background-color: #326C89; /* azul claro */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-padding: 8 15;
+}
+
+.button:hover {
+    -fx-background-color:#ffffff;
+    -fx-text-fill: #326C89;
+    -fx-border-color: #326C89;
+    -fx-border-radius: 5;
+}
+
+/* Campos de texto normales */
+.text-field {
+    -fx-border-color: black; /* sin borde */
+    -fx-background-radius: 3;
+    -fx-background-color: #f2f2f2; /* texto negro */
+    -fx-text-fill: black;
+    -fx-padding: 5 8;
+    -fx-border-radius: 5;
+}
+
+/* Tablas */
+.table-view {
+    -fx-background-color: #f2f2f2; /* gris suave */
+    -fx-table-cell-border-color: transparent;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+}
+
+/* Encabezados de tabla */
+.table-view .column-header-background {
+    -fx-background-color: #f2f2f2;
+}
+
+.table-view .column-header, 
+.table-view .column-header .label {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+
+/* Filas de la tabla */
+.table-row-cell {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #b0d8f8;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #f2f2f2; /* gris suave */
+}
+
+/* ==== BLOQUEO TOTAL DE LA SELECCIÓN EN CELDAS ==== */
+.table-cell:selected {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: black !important;
+    -fx-font-weight: bold !important;
+}
+
+.table-cell:selected:focused {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: black !important;
+    -fx-font-weight: bold !important;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: black !important;
+    -fx-font-weight: bold !important;
+}
+
+.table-row-cell:focused:selected .table-cell {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: black !important;
+    -fx-font-weight: bold !important;
+}
+
+/* ==== ESTILO DE FILA SELECCIONADA ==== */
+.table-row-cell:selected {
+    -fx-background-color: inherit !important;
+    -fx-border-color: black !important;
+    -fx-border-width: 1 !important;
+}
+
+.table-row-cell:focused:selected {
+    -fx-background-color: inherit !important;
+    -fx-border-color: black !important;
+    -fx-border-width: 1 !important;
+}
+
+/* Separadores */
+.separator {
+    -fx-background-color: #BDBDBD;
+    -fx-padding: 2 0;
+}

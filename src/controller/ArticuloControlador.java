@@ -1,9 +1,10 @@
 package controller;
 
-import dao.Repositorio;
-import model.Articulo;
 import java.util.Collections;
 import java.util.List;
+
+import dao.Repositorio;
+import model.Articulo;
 
 public class ArticuloControlador {
     
@@ -60,4 +61,9 @@ public class ArticuloControlador {
             return Collections.emptyList(); 
         }
     }
+
+    public void eliminarArticulo(String codigo) {
+        articuloRepo.eliminar(codigo);
+    }
+
 }

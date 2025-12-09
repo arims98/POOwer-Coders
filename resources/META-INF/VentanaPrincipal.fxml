@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<VBox spacing="15" alignment="CENTER"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.VentanaController"
+      style="-fx-padding: 15;"
+      stylesheets="@styles.css">
+
+     <!-- Imagen del logo centrada encima del título -->
+    <ImageView fx:id="logo" fitHeight="80" fitWidth="80">
+        <image>
+            <Image url="@../images/logo.png"/>
+        </image>
+    </ImageView>
+
+    <!-- Título principal -->
+    <Label text="ONLINE STORE" styleClass="title"/>
+
+    <Separator prefWidth="200"/>
+
+    <Button text="Gestión de Artículos" onAction="#abrirVentanaArticulo" prefWidth="200"/>
+    <Button text="Gestión de Clientes" onAction="#abrirVentanaCliente" prefWidth="200"/>
+    <Button text="Gestión de Pedidos" onAction="#abrirVentanaPedido" prefWidth="200"/>
+
+    <Separator prefWidth="200"/>
+
+    <Button text="Salir" onAction="#salir" prefWidth="200"/>
+</VBox>

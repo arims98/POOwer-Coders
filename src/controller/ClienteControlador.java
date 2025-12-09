@@ -1,11 +1,12 @@
 package controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import dao.Repositorio;
 import model.Cliente;
 import model.ClienteEstandar;
 import model.ClientePremium;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ClienteControlador {
     

@@ -1,6 +1,15 @@
 package model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "CLIENTE")
@@ -42,6 +51,12 @@ public abstract class Cliente {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    @Transient
+    public String getTipo() {
+        DiscriminatorValue dv = this.getClass().getAnnotation(DiscriminatorValue.class);
+        return (dv != null) ? dv.value() : "Desconocido";
+    }
 
     @Override
     public String toString() {
