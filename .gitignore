@@ -14,3 +14,5 @@ target/
 .vscode/
 
 src/app/oracleJdk-25/
+src/app/oracleJdk-25/lib/modules
+
