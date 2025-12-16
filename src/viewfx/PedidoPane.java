@@ -3,19 +3,18 @@ package viewfx;
 import controller.ArticuloControlador;
 import controller.ClienteControlador;
 import controller.PedidoControlador;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.*;
 import model.Articulo;
 import model.Cliente;
 import model.Pedido;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -28,17 +27,16 @@ public class PedidoPane extends VBox {
     private final ObservableList<Pedido> data = FXCollections.observableArrayList();
     private final TableView<Pedido> table = new TableView<>(data);
 
-    // Crear
-    private final TextField tfNumPedido = new TextField();
-    private final TextField tfNif = new TextField();
-    private final TextField tfCodArticulo = new TextField();
+    // Crear pedido
+    private final TextField tfNumNuevo = new TextField();
+    private final TextField tfNifNuevo = new TextField();
+    private final TextField tfCodArtNuevo = new TextField();
     private final TextField tfCantidad = new TextField();
 
-    // Buscar/Eliminar
-    private final TextField tfBuscarNum = new TextField();
+    // Gestión
+    private final TextField tfNumGestion = new TextField();
 
     // Filtros
-    private final ToggleGroup tgFiltro = new ToggleGroup();
     private final RadioButton rbTodos = new RadioButton("Todos");
     private final RadioButton rbPend = new RadioButton("Pendientes");
     private final RadioButton rbEnv = new RadioButton("Enviados");
@@ -54,166 +52,179 @@ public class PedidoPane extends VBox {
 
         table.setPlaceholder(new Label("No hay pedidos para mostrar"));
 
-        // ---- Formulario CREAR ----
-        tfNumPedido.setPromptText("Nº pedido (opcional)");
-        tfNif.setPromptText("NIF cliente");
-        tfCodArticulo.setPromptText("Código artículo");
+        // ===== Fila inputs: Crear =====
+        tfNumNuevo.setPromptText("Nº pedido (opcional)");
+        tfNifNuevo.setPromptText("NIF cliente");
+        tfCodArtNuevo.setPromptText("Código artículo");
         tfCantidad.setPromptText("Cantidad");
 
+        tfNumNuevo.setPrefWidth(160);
+        tfNifNuevo.setPrefWidth(160);
+        tfCodArtNuevo.setPrefWidth(170);
+        tfCantidad.setPrefWidth(120);
+
         Button btnCrear = new Button("Crear pedido");
+        btnCrear.getStyleClass().add("primary-button");
         btnCrear.setOnAction(e -> onCrear());
 
-        HBox formCrear = new HBox(8,
+        HBox rowCrear = new HBox(10,
                 new Label("Nuevo:"),
-                tfNumPedido, tfNif, tfCodArticulo, tfCantidad,
+                tfNumNuevo, tfNifNuevo, tfCodArtNuevo, tfCantidad,
                 btnCrear
         );
+        rowCrear.setAlignment(Pos.CENTER_LEFT);
 
-        // ---- Buscar / Eliminar ----
-        tfBuscarNum.setPromptText("Nº pedido (ej: P01)");
+        // ===== Fila inputs: Gestión =====
+        tfNumGestion.setPromptText("Nº pedido (ej: P01)");
+        tfNumGestion.setPrefWidth(200);
 
         Button btnBuscar = new Button("Buscar");
+        btnBuscar.getStyleClass().add("ghost-button");
         btnBuscar.setOnAction(e -> onBuscar());
 
         Button btnEliminar = new Button("Eliminar");
+        btnEliminar.getStyleClass().add("ghost-button");
         btnEliminar.setOnAction(e -> onEliminar());
 
-        HBox formGestion = new HBox(8,
+        HBox rowGestion = new HBox(10,
                 new Label("Gestión:"),
-                tfBuscarNum, btnBuscar, btnEliminar
+                tfNumGestion, btnBuscar, btnEliminar
         );
+        rowGestion.setAlignment(Pos.CENTER_LEFT);
 
-        // ---- Filtros ----
-        rbTodos.setToggleGroup(tgFiltro);
-        rbPend.setToggleGroup(tgFiltro);
-        rbEnv.setToggleGroup(tgFiltro);
+        // ===== Fila filtros =====
+        ToggleGroup tg = new ToggleGroup();
+        rbTodos.setToggleGroup(tg);
+        rbPend.setToggleGroup(tg);
+        rbEnv.setToggleGroup(tg);
         rbTodos.setSelected(true);
 
         tfFiltroNif.setPromptText("Filtrar por NIF (opcional)");
+        tfFiltroNif.setPrefWidth(220);
 
-        tgFiltro.selectedToggleProperty().addListener((o, a, b) -> refrescar());
-        tfFiltroNif.textProperty().addListener((o, a, b) -> refrescar());
-
-        HBox filtros = new HBox(12,
+        HBox rowFiltro = new HBox(14,
                 new Label("Filtro:"),
                 rbTodos, rbPend, rbEnv,
                 new Label("NIF:"),
                 tfFiltroNif
         );
+        rowFiltro.setAlignment(Pos.CENTER_LEFT);
 
-        // ---- Tabla ----
+        // ===== Botones abajo (estética igual que las otras pestañas) =====
+        Button btnLimpiar = new Button("Limpiar");
+        btnLimpiar.getStyleClass().add("ghost-button");
+        btnLimpiar.setOnAction(e -> limpiar());
+
+        Button btnRefrescar = new Button("Refrescar");
+        btnRefrescar.getStyleClass().add("ghost-button");
+        btnRefrescar.setOnAction(e -> refrescar());
+
+        HBox rowButtons = new HBox(10, btnLimpiar, btnRefrescar);
+        rowButtons.setAlignment(Pos.CENTER_LEFT);
+
+        // refrescar cuando cambian filtros
+        tg.selectedToggleProperty().addListener((o,a,b) -> refrescar());
+        tfFiltroNif.textProperty().addListener((o,a,b) -> refrescar());
+
+        // ===== Tabla =====
         TableColumn<Pedido, String> cNum = new TableColumn<>("Nº Pedido");
-        cNum.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getNumeroPedido()));
+        cNum.setCellValueFactory(new PropertyValueFactory<>("numeroPedido"));
 
         TableColumn<Pedido, String> cNif = new TableColumn<>("NIF Cliente");
-        cNif.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getCliente().getNif()));
+        cNif.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(cell.getValue().getCliente().getNif()));
 
         TableColumn<Pedido, String> cArt = new TableColumn<>("Artículo");
-        cArt.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getArticulo().getCodigo()));
+        cArt.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(cell.getValue().getArticulo().getCodigo()));
 
         TableColumn<Pedido, Integer> cCant = new TableColumn<>("Cantidad");
-        cCant.setCellValueFactory(p -> new SimpleObjectProperty<>(p.getValue().getCantidad()));
+        cCant.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
 
         TableColumn<Pedido, String> cEstado = new TableColumn<>("Estado");
-        cEstado.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getEstado()));
+        cEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
-        TableColumn<Pedido, LocalDateTime> cFecha = new TableColumn<>("Fecha/Hora");
-        cFecha.setCellValueFactory(p -> new SimpleObjectProperty<>(p.getValue().getFechaHora()));
-
-        // ✅ Formato fecha/hora
+        TableColumn<Pedido, String> cFecha = new TableColumn<>("Fecha/Hora");
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        cFecha.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(LocalDateTime item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? "" : fmt.format(item));
-            }
-        });
+        cFecha.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(
+                cell.getValue().getFechaHora() == null ? "" : cell.getValue().getFechaHora().format(fmt)
+        ));
 
         table.getColumns().setAll(cNum, cNif, cArt, cCant, cEstado, cFecha);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
-        Button btnRefresh = new Button("Refrescar");
-        btnRefresh.setOnAction(e -> refrescar());
+        // seleccionar fila -> rellena nº gestión
+        table.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
+            if (sel != null) tfNumGestion.setText(sel.getNumeroPedido());
+        });
 
-        getChildren().addAll(formCrear, formGestion, filtros, btnRefresh, table);
+        getChildren().addAll(rowCrear, rowGestion, rowFiltro, rowButtons, table);
 
         refrescar();
     }
 
     private void onCrear() {
         try {
-            String numero = tfNumPedido.getText().trim();
-            String nif = tfNif.getText().trim();
-            String cod = tfCodArticulo.getText().trim();
-            int cantidad = Integer.parseInt(tfCantidad.getText().trim());
+            String num = tfNumNuevo.getText().trim();
+            String nif = tfNifNuevo.getText().trim();
+            String cod = tfCodArtNuevo.getText().trim();
+            String cantStr = tfCantidad.getText().trim();
 
-            if (nif.isEmpty() || cod.isEmpty()) {
-                FxMsg.error("Faltan datos", "NIF y Código de artículo son obligatorios.");
-                return;
-            }
+            if (nif.isEmpty()) throw new Exception("El NIF del cliente es obligatorio.");
+            if (cod.isEmpty()) throw new Exception("El código del artículo es obligatorio.");
+            int cant = Integer.parseInt(cantStr);
 
+            // buscar cliente y artículo usando los controladores existentes
             Cliente cliente = clienteCtrl.listarClientes().stream()
                     .filter(c -> c.getNif().equalsIgnoreCase(nif))
                     .findFirst().orElse(null);
 
-            if (cliente == null) {
-                FxMsg.error("Cliente no encontrado", "No existe cliente con NIF: " + nif);
-                return;
-            }
+            if (cliente == null) throw new Exception("Cliente no encontrado: " + nif);
 
-            Articulo articulo = articuloCtrl.listarArticulos().stream()
+            Articulo art = articuloCtrl.listarArticulos().stream()
                     .filter(a -> a.getCodigo().equalsIgnoreCase(cod))
                     .findFirst().orElse(null);
 
-            if (articulo == null) {
-                FxMsg.error("Artículo no encontrado", "No existe artículo con código: " + cod);
-                return;
-            }
+            if (art == null) throw new Exception("Artículo no encontrado: " + cod);
 
-            pedidoCtrl.crearPedido(numero.isEmpty() ? null : numero, cliente, articulo, cantidad);
-
-            tfNumPedido.clear();
-            tfNif.clear();
-            tfCodArticulo.clear();
-            tfCantidad.clear();
+            pedidoCtrl.crearPedido(num.isEmpty() ? null : num, cliente, art, cant);
 
             FxMsg.info("OK", "Pedido creado correctamente.");
+            limpiar();
             refrescar();
 
         } catch (NumberFormatException ex) {
-            FxMsg.error("Formato incorrecto", "Cantidad debe ser un número entero.");
+            FxMsg.error("Formato incorrecto", "La cantidad debe ser un número entero.");
         } catch (Exception ex) {
             FxMsg.error("Error", ex.getMessage());
         }
     }
 
     private void onBuscar() {
-        String num = tfBuscarNum.getText().trim();
-        if (num.isEmpty()) {
-            FxMsg.error("Falta número", "Introduce el número de pedido (ej: P01).");
-            return;
+        try {
+            String num = tfNumGestion.getText().trim();
+            if (num.isEmpty()) {
+                FxMsg.error("Falta Nº pedido", "Escribe un número de pedido para buscar.");
+                return;
+            }
+            Pedido p = pedidoCtrl.buscarPedido(num);
+            if (p == null) {
+                FxMsg.info("No encontrado", "No existe el pedido " + num);
+                return;
+            }
+            FxMsg.info("Pedido encontrado",
+                    p.getNumeroPedido() + " | " + p.getCliente().getNif() + " | " +
+                            p.getArticulo().getCodigo() + " | x" + p.getCantidad() + " | " + p.getEstado());
+        } catch (Exception ex) {
+            FxMsg.error("Error", ex.getMessage());
         }
-
-        Pedido p = pedidoCtrl.buscarPedido(num);
-        if (p == null) {
-            FxMsg.error("No encontrado", "No existe el pedido " + num);
-            return;
-        }
-
-        FxMsg.info("Pedido encontrado",
-                p.getNumeroPedido()
-                        + " | " + p.getCliente().getNif()
-                        + " | " + p.getArticulo().getCodigo()
-                        + " | x" + p.getCantidad()
-                        + " | " + p.getEstado());
     }
 
     private void onEliminar() {
         try {
-            String num = tfBuscarNum.getText().trim();
+            Pedido sel = table.getSelectionModel().getSelectedItem();
+            String num = (sel != null) ? sel.getNumeroPedido() : tfNumGestion.getText().trim();
+
             if (num.isEmpty()) {
-                FxMsg.error("Falta número", "Introduce el número de pedido para eliminar (ej: P01).");
+                FxMsg.error("Falta Nº pedido", "Selecciona un pedido o escribe su número para eliminar.");
                 return;
             }
 
@@ -222,7 +233,9 @@ public class PedidoPane extends VBox {
             }
 
             pedidoCtrl.eliminarPedido(num);
+
             FxMsg.info("OK", "Pedido eliminado correctamente.");
+            limpiar();
             refrescar();
 
         } catch (Exception ex) {
@@ -230,27 +243,32 @@ public class PedidoPane extends VBox {
         }
     }
 
+    private void limpiar() {
+        tfNumNuevo.clear();
+        tfNifNuevo.clear();
+        tfCodArtNuevo.clear();
+        tfCantidad.clear();
+        tfNumGestion.clear();
+        // no borro filtro para que sea cómodo, pero si lo quieres:
+        // tfFiltroNif.clear();
+        table.getSelectionModel().clearSelection();
+    }
+
     private void refrescar() {
+        List<Pedido> list;
+
+        if (rbPend.isSelected()) list = pedidoCtrl.listarPedidosPendientes();
+        else if (rbEnv.isSelected()) list = pedidoCtrl.listarPedidosEnviados();
+        else list = pedidoCtrl.listarPedidos();
+
+        // filtro por NIF (opcional)
         String nif = tfFiltroNif.getText().trim();
-        boolean filtrarPorNif = !nif.isEmpty();
-
-        List<Pedido> lista;
-
-        if (rbPend.isSelected()) {
-            lista = filtrarPorNif ? pedidoCtrl.listarPedidosPendientesPorCliente(nif)
-                    : pedidoCtrl.listarPedidosPendientes();
-        } else if (rbEnv.isSelected()) {
-            lista = filtrarPorNif ? pedidoCtrl.listarPedidosEnviadosPorCliente(nif)
-                    : pedidoCtrl.listarPedidosEnviados();
-        } else {
-            lista = pedidoCtrl.listarPedidos();
-            if (filtrarPorNif) {
-                lista = lista.stream()
-                        .filter(p -> p.getCliente().getNif().equalsIgnoreCase(nif))
-                        .toList();
-            }
+        if (!nif.isEmpty()) {
+            list = list.stream()
+                    .filter(p -> p.getCliente().getNif().equalsIgnoreCase(nif))
+                    .toList();
         }
 
-        data.setAll(lista);
+        data.setAll(list);
     }
 }

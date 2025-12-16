@@ -60,4 +60,23 @@ public class ArticuloControlador {
             return Collections.emptyList(); 
         }
     }
+
+    public Articulo buscarArticulo(String codigo) {
+        return articuloRepo.buscarPorId(codigo);
+    }
+
+    public void eliminarArticulo(String codigo) throws Exception {
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new Exception("Debes indicar un código de artículo.");
+        }
+
+        Articulo art = buscarArticulo(codigo);
+        if (art == null) {
+            throw new Exception("Artículo no encontrado: " + codigo);
+        }
+
+        // Puede fallar si hay pedidos relacionados (FK). Se mostrará el error en la vista.
+        articuloRepo.eliminar(codigo);
+    }
+
 }

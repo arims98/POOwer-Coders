@@ -3,26 +3,46 @@ package viewfx;
 import controller.ArticuloControlador;
 import controller.ClienteControlador;
 import controller.PedidoControlador;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 public class MainView extends BorderPane {
 
-    private final ArticuloControlador articuloCtrl;
-    private final ClienteControlador clienteCtrl;
-    private final PedidoControlador pedidoCtrl;
+    private final TabPane tabs = new TabPane();
 
     public MainView(ArticuloControlador articuloCtrl,
                     ClienteControlador clienteCtrl,
-                    PedidoControlador pedidoCtrl) {
+                    PedidoControlador pedidoCtrl,
+                    Runnable onHome) {
 
-        this.articuloCtrl = articuloCtrl;
-        this.clienteCtrl = clienteCtrl;
-        this.pedidoCtrl = pedidoCtrl;
+        getStyleClass().add("home-bg");
 
-        TabPane tabs = new TabPane();
+        // Top bar
+        ToolBar bar = new ToolBar();
+        bar.getStyleClass().add("topbar");
+        bar.getStyleClass().add("app-header");
 
+        Label title = new Label("Gestión de Online Store");
+        title.getStyleClass().add("topbar-title");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button btnHome = new Button("Inicio");
+        btnHome.getStyleClass().add("ghost-button");
+        btnHome.setOnAction(e -> {
+            if (onHome != null) onHome.run();
+        });
+
+        bar.getItems().addAll(title, spacer, btnHome);
+        setTop(bar);
+
+        // Tabs
         Tab tArticulos = new Tab("Artículos", new ArticuloPane(articuloCtrl));
         tArticulos.setClosable(false);
 
@@ -33,6 +53,18 @@ public class MainView extends BorderPane {
         tPedidos.setClosable(false);
 
         tabs.getTabs().addAll(tArticulos, tClientes, tPedidos);
-        setCenter(tabs);
+        tabs.getStyleClass().add("app-tabs");
+
+        VBox content = new VBox(tabs);
+        content.getStyleClass().add("content-surface");
+        content.setPadding(new Insets(16));
+        content.setMaxWidth(1200);
+
+        BorderPane.setMargin(content, new Insets(18, 18, 18, 18));
+        setCenter(content);
+    }
+
+    public void selectTab(int index) {
+        tabs.getSelectionModel().select(index);
     }
 }

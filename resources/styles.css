@@ -1,0 +1,267 @@
+.root {
+  -fx-font-family: "Segoe UI";
+  -fx-font-size: 13px;
+}
+
+/* =========================
+   HOME (pantalla inicial)
+   ========================= */
+
+/* Fondo con color suave */
+.home-bg {
+  -fx-background-color: linear-gradient(to bottom right, #eef2ff, #ffffff, #f3f6ff);
+}
+
+/* Header oscuro con degradado */
+.header {
+  -fx-background-color: linear-gradient(to right, #0b1220, #111827, #0b1220);
+  -fx-border-color: rgba(255,255,255,0.08);
+  -fx-border-width: 0 0 1 0;
+  -fx-padding: 18 22;
+}
+
+.brand {
+  -fx-text-fill: white;
+  -fx-font-size: 22px;
+  -fx-font-weight: 900;
+}
+
+.brand-sub {
+  -fx-text-fill: #cbd5e1;
+  -fx-font-size: 12px;
+  -fx-font-weight: 700;
+}
+
+.header-subtitle {
+  -fx-text-fill: #a5b4fc;
+  -fx-font-size: 12px;
+  -fx-font-weight: 800;
+}
+
+/* Contenedor central con efecto glass */
+.home-container {
+  -fx-background-color: rgba(255,255,255,0.82);
+  -fx-background-radius: 18;
+  -fx-border-radius: 18;
+  -fx-border-color: rgba(15,23,42,0.08);
+  -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.14), 24, 0, 0, 10);
+}
+
+/* Hero */
+.hero-title {
+  -fx-font-size: 18px;
+  -fx-font-weight: 900;
+  -fx-text-fill: #0f172a;
+}
+
+.hero-subtitle {
+  -fx-text-fill: #475569;
+  -fx-font-size: 13px;
+}
+
+/* Cards de módulos */
+.module-card {
+  -fx-background-color: white;
+  -fx-background-radius: 16;
+  -fx-border-radius: 16;
+  -fx-border-color: rgba(15,23,42,0.10);
+  -fx-padding: 16;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.10), 14, 0, 0, 6);
+}
+
+.module-card:hover {
+  -fx-border-color: rgba(37,99,235,0.45);
+  -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.20), 20, 0, 0, 10);
+  -fx-translate-y: -2;
+}
+
+.card-icon {
+  -fx-font-size: 22px;
+}
+
+.card-title {
+  -fx-font-size: 15px;
+  -fx-font-weight: 900;
+  -fx-text-fill: #0f172a;
+}
+
+.card-desc {
+  -fx-text-fill: #475569;
+}
+
+.card-cta {
+  -fx-text-fill: #2563eb;
+  -fx-font-weight: 900;
+}
+
+/* Footer */
+.footer {
+  -fx-text-fill: #64748b;
+  -fx-font-size: 12px;
+}
+
+
+/* =========================
+   MAIN (pestañas / app)
+   ========================= */
+
+/* Superficie contenedora tipo "card" para las pestañas */
+.content-surface {
+  -fx-background-color: rgba(255,255,255,0.82);
+  -fx-background-radius: 18;
+  -fx-border-radius: 18;
+  -fx-border-color: rgba(15,23,42,0.08);
+  -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.14), 24, 0, 0, 10);
+}
+
+/* Topbar */
+.topbar {
+  -fx-background-color: rgba(255,255,255,0.92);
+  -fx-border-color: rgba(15,23,42,0.08);
+  -fx-border-width: 0 0 1 0;
+  -fx-padding: 8 12;
+}
+
+.topbar-title {
+  -fx-font-size: 14px;
+  -fx-font-weight: 900;
+  -fx-text-fill: #0f172a;
+}
+
+.ghost-button {
+  -fx-background-color: transparent;
+  -fx-border-color: rgba(15,23,42,0.18);
+  -fx-border-radius: 10;
+  -fx-background-radius: 10;
+  -fx-padding: 8 12;
+  -fx-font-weight: 700;
+}
+
+.ghost-button:hover {
+  -fx-border-color: rgba(37,99,235,0.45);
+  -fx-text-fill: #2563eb;
+}
+
+/* Botón primario (para acciones principales como Añadir) */
+.primary-button {
+  -fx-background-color: #2563eb;
+  -fx-text-fill: white;
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+  -fx-padding: 8 12;
+  -fx-font-weight: 900;
+}
+
+.primary-button:hover {
+  -fx-background-color: #1d4ed8;
+}
+
+/* Tabs modernos */
+.app-tabs .tab-header-area {
+  -fx-padding: 6 6 0 6;
+}
+
+.app-tabs .tab-header-background {
+  -fx-background-color: transparent;
+}
+
+.app-tabs .tab {
+  -fx-background-color: rgba(255,255,255,0.65);
+  -fx-background-radius: 12 12 0 0;
+  -fx-border-radius: 12 12 0 0;
+  -fx-border-color: rgba(15,23,42,0.10);
+  -fx-padding: 6 14;
+}
+
+.app-tabs .tab:selected {
+  -fx-background-color: white;
+  -fx-border-color: rgba(37,99,235,0.25);
+}
+
+.app-tabs .tab .tab-label {
+  -fx-font-weight: 800;
+  -fx-text-fill: #0f172a;
+}
+
+.app-tabs .tab:selected .tab-label {
+  -fx-text-fill: #1d4ed8;
+}
+
+/* Inputs */
+.text-field, .choice-box, .combo-box-base {
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+  -fx-border-color: rgba(15,23,42,0.14);
+  -fx-background-color: white;
+  -fx-padding: 8 10;
+}
+
+.text-field:focused, .choice-box:focused, .combo-box-base:focused {
+  -fx-border-color: rgba(37,99,235,0.45);
+  -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.18), 10, 0, 0, 2);
+}
+
+/* Botones generales */
+.button {
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+  -fx-font-weight: 800;
+  -fx-padding: 8 12;
+}
+
+.button:hover {
+  -fx-opacity: 0.95;
+}
+
+/* TableView */
+.table-view {
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
+  -fx-border-color: rgba(15,23,42,0.10);
+}
+
+.table-view .column-header-background {
+  -fx-background-color: rgba(255,255,255,0.85);
+}
+
+.table-view .column-header, .table-view .filler {
+  -fx-border-color: rgba(15,23,42,0.08);
+  -fx-border-width: 0 0 1 0;
+}
+
+.table-row-cell:hover {
+  -fx-background-color: rgba(37,99,235,0.05);
+}
+
+.table-row-cell:selected {
+  -fx-background-color: rgba(37,99,235,0.14);
+}
+
+/* Labels */
+.home-container .label,
+.content-surface .label {
+  -fx-text-fill: #0f172a;
+}
+
+/* ===== Header azul también en la pantalla de gestión ===== */
+.app-header {
+  -fx-background-color: linear-gradient(to right, #0b1220, #111827, #0b1220);
+  -fx-border-color: rgba(255,255,255,0.08);
+  -fx-border-width: 0 0 1 0;
+}
+
+.app-header .label {
+  -fx-text-fill: white;
+}
+
+/* Botón "Inicio" cuando está en el header oscuro */
+.app-header .ghost-button {
+  -fx-text-fill: white;
+  -fx-border-color: rgba(255,255,255,0.25);
+}
+
+.app-header .ghost-button:hover {
+  -fx-border-color: rgba(165,180,252,0.70);
+  -fx-text-fill: #a5b4fc;
+}

@@ -11,7 +11,7 @@ import jakarta.persistence.Persistence;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import viewfx.MainView;
+import viewfx.AppShell;
 
 public class MainFX extends Application {
 
@@ -30,10 +30,13 @@ public class MainFX extends Application {
         ClienteControlador clienteCtrl = new ClienteControlador(factory.getClienteRepositorio());
         ArticuloControlador articuloCtrl = new ArticuloControlador(factory.getArticuloRepositorio());
 
-        MainView root = new MainView(articuloCtrl, clienteCtrl, pedidoCtrl);
+        AppShell root = new AppShell(articuloCtrl, clienteCtrl, pedidoCtrl);
+
+        Scene scene = new Scene(root, 1200, 720);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
         stage.setTitle("POOwer Coders - Online Store");
-        stage.setScene(new Scene(root, 1100, 650));
+        stage.setScene(scene);
         stage.show();
     }
 

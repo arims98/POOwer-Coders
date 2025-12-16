@@ -1,15 +1,19 @@
 package viewfx;
 
 import controller.ClienteControlador;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.*;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import model.Cliente;
+import model.ClienteEstandar;
 import model.ClientePremium;
+
+import java.util.List;
 
 public class ClientePane extends VBox {
 
@@ -22,12 +26,13 @@ public class ClientePane extends VBox {
     private final TextField tfDomicilio = new TextField();
     private final TextField tfNif = new TextField();
     private final TextField tfEmail = new TextField();
-    private final ChoiceBox<String> cbTipo = new ChoiceBox<>(FXCollections.observableArrayList("E", "P"));
 
-    private final ToggleGroup tgFiltro = new ToggleGroup();
+    // Tipo: E / P (lo que espera tu controlador)
+    private final ComboBox<String> cbTipo = new ComboBox<>();
+
     private final RadioButton rbTodos = new RadioButton("Todos");
-    private final RadioButton rbE = new RadioButton("Estándar");
-    private final RadioButton rbP = new RadioButton("Premium");
+    private final RadioButton rbEstandar = new RadioButton("Cliente Estándar");
+    private final RadioButton rbPremium = new RadioButton("Cliente Premium");
 
     public ClientePane(ClienteControlador clienteCtrl) {
         this.clienteCtrl = clienteCtrl;
@@ -37,81 +42,114 @@ public class ClientePane extends VBox {
 
         table.setPlaceholder(new Label("No hay clientes para mostrar"));
 
-        // ---- Formulario ----
+        // ---- Inputs ----
         tfNombre.setPromptText("Nombre");
         tfDomicilio.setPromptText("Domicilio");
         tfNif.setPromptText("NIF");
         tfEmail.setPromptText("Email");
+
+        // Importante: valores E/P
+        cbTipo.getItems().addAll("E", "P");
         cbTipo.setValue("E");
+        cbTipo.setPrefWidth(90);
 
-        Button btnAdd = new Button("Añadir cliente");
-        btnAdd.setOnAction(e -> onAdd());
+        Label lblNuevo = new Label("Nuevo:");
+        HBox rowInputs = new HBox(10, lblNuevo, tfNombre, tfDomicilio, tfNif, tfEmail, cbTipo);
+        rowInputs.setAlignment(Pos.CENTER_LEFT);
 
-        Button btnDel = new Button("Eliminar por NIF");
-        btnDel.setOnAction(e -> onDelete());
+        // Grow para que no se corte
+        HBox.setHgrow(tfDomicilio, Priority.ALWAYS);
+        tfDomicilio.setMinWidth(240);
 
-        HBox form = new HBox(8,
-                new Label("Nuevo:"),
-                tfNombre, tfDomicilio, tfNif, tfEmail, cbTipo,
-                btnAdd, btnDel
-        );
+        tfNombre.setPrefWidth(180);
+        tfNif.setPrefWidth(140);
+        tfEmail.setPrefWidth(220);
 
         // ---- Filtros ----
-        rbTodos.setToggleGroup(tgFiltro);
-        rbE.setToggleGroup(tgFiltro);
-        rbP.setToggleGroup(tgFiltro);
+        ToggleGroup filtros = new ToggleGroup();
+        rbTodos.setToggleGroup(filtros);
+        rbEstandar.setToggleGroup(filtros);
+        rbPremium.setToggleGroup(filtros);
         rbTodos.setSelected(true);
 
-        tgFiltro.selectedToggleProperty().addListener((o, a, b) -> refrescar());
+        HBox rowFiltro = new HBox(14, new Label("Filtro:"), rbTodos, rbEstandar, rbPremium);
+        rowFiltro.setAlignment(Pos.CENTER_LEFT);
 
-        HBox filtros = new HBox(12, new Label("Filtro:"), rbTodos, rbE, rbP);
+        // ---- Botones (abajo, como Artículos) ----
+        Button btnAdd = new Button("Añadir cliente");
+        btnAdd.getStyleClass().add("primary-button");
+        btnAdd.setOnAction(e -> onAdd());
+
+        Button btnDel = new Button("Eliminar cliente");
+        btnDel.getStyleClass().add("ghost-button");
+        btnDel.setOnAction(e -> onDelete());
+
+        Button btnClear = new Button("Limpiar");
+        btnClear.getStyleClass().add("ghost-button");
+        btnClear.setOnAction(e -> limpiarFormulario());
+
+        Button btnRefresh = new Button("Refrescar");
+        btnRefresh.getStyleClass().add("ghost-button");
+        btnRefresh.setOnAction(e -> refrescar());
+
+        HBox rowButtons = new HBox(10, btnAdd, btnDel, btnClear, btnRefresh);
+        rowButtons.setAlignment(Pos.CENTER_LEFT);
 
         // ---- Tabla ----
         TableColumn<Cliente, String> cNif = new TableColumn<>("NIF");
-        cNif.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNif()));
+        cNif.setCellValueFactory(new PropertyValueFactory<>("nif"));
 
-        TableColumn<Cliente, String> cNom = new TableColumn<>("Nombre");
-        cNom.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
+        TableColumn<Cliente, String> cNombre = new TableColumn<>("Nombre");
+        cNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
         TableColumn<Cliente, String> cDom = new TableColumn<>("Domicilio");
-        cDom.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDomicilio()));
+        cDom.setCellValueFactory(new PropertyValueFactory<>("domicilio"));
 
         TableColumn<Cliente, String> cEmail = new TableColumn<>("Email");
-        cEmail.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEmail()));
+        cEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        TableColumn<Cliente, String> cTipo = new TableColumn<>("Tipo");
-        cTipo.setCellValueFactory(c ->
-                new SimpleStringProperty((c.getValue() instanceof ClientePremium) ? "Premium" : "Estandar")
-        );
+        // Tipo calculado (no depende de getTipo())
+        TableColumn<Cliente, String> cTipo = new TableColumn<>("Tipo de cliente");
+        cTipo.setCellValueFactory(cell -> new ReadOnlyStringWrapper(tipoCliente(cell.getValue())));
 
-        table.getColumns().setAll(cNif, cNom, cDom, cEmail, cTipo);
+        table.getColumns().setAll(cNif, cNombre, cDom, cEmail, cTipo);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
-        Button btnRefresh = new Button("Refrescar");
-        btnRefresh.setOnAction(e -> refrescar());
+        // Selección rellena formulario
+        table.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
+            if (sel != null) {
+                tfNif.setText(sel.getNif());
+                tfNombre.setText(sel.getNombre());
+                tfDomicilio.setText(sel.getDomicilio());
+                tfEmail.setText(sel.getEmail());
+                cbTipo.setValue(sel instanceof ClientePremium ? "P" : "E");
+            }
+        });
 
-        getChildren().addAll(form, filtros, btnRefresh, table);
+        // refrescar al cambiar filtros
+        filtros.selectedToggleProperty().addListener((o, a, b) -> refrescar());
+
+        getChildren().addAll(rowInputs, rowFiltro, rowButtons, table);
 
         refrescar();
     }
 
     private void onAdd() {
         try {
-            clienteCtrl.agregarCliente(
-                    tfNombre.getText().trim(),
-                    tfDomicilio.getText().trim(),
-                    tfNif.getText().trim(),
-                    tfEmail.getText().trim(),
-                    cbTipo.getValue()
-            );
+            String nombre = tfNombre.getText().trim();
+            String domicilio = tfDomicilio.getText().trim();
+            String nif = tfNif.getText().trim();
+            String email = tfEmail.getText().trim();
+            String tipo = cbTipo.getValue(); // "E" o "P"
 
-            tfNombre.clear();
-            tfDomicilio.clear();
-            tfNif.clear();
-            tfEmail.clear();
-            cbTipo.setValue("E");
+            if (nif.isEmpty()) throw new Exception("El NIF es obligatorio.");
+            if (nombre.isEmpty()) throw new Exception("El nombre es obligatorio.");
+
+            // ✅ Tu método real
+            clienteCtrl.agregarCliente(nombre, domicilio, nif, email, tipo);
 
             FxMsg.info("OK", "Cliente añadido correctamente.");
+            limpiarFormulario();
             refrescar();
 
         } catch (Exception ex) {
@@ -121,9 +159,11 @@ public class ClientePane extends VBox {
 
     private void onDelete() {
         try {
-            String nif = tfNif.getText().trim();
+            Cliente sel = table.getSelectionModel().getSelectedItem();
+            String nif = (sel != null) ? sel.getNif() : tfNif.getText().trim();
+
             if (nif.isEmpty()) {
-                FxMsg.error("Falta NIF", "Introduce el NIF en el campo NIF para eliminar.");
+                FxMsg.error("Falta NIF", "Selecciona un cliente o escribe su NIF para eliminar.");
                 return;
             }
 
@@ -131,8 +171,11 @@ public class ClientePane extends VBox {
                 return;
             }
 
+            // ✅ Tu método real en el controlador
             clienteCtrl.eliminar(nif);
-            FxMsg.info("OK", "Cliente eliminado (si existía).");
+
+            FxMsg.info("OK", "Cliente eliminado correctamente.");
+            limpiarFormulario();
             refrescar();
 
         } catch (Exception ex) {
@@ -140,9 +183,32 @@ public class ClientePane extends VBox {
         }
     }
 
+    private void limpiarFormulario() {
+        tfNombre.clear();
+        tfDomicilio.clear();
+        tfNif.clear();
+        tfEmail.clear();
+        cbTipo.setValue("E");
+        table.getSelectionModel().clearSelection();
+    }
+
     private void refrescar() {
-        if (rbE.isSelected()) data.setAll(clienteCtrl.listarClientesEstandar());
-        else if (rbP.isSelected()) data.setAll(clienteCtrl.listarClientesPremium());
-        else data.setAll(clienteCtrl.listarClientes());
+        List<Cliente> list;
+
+        if (rbEstandar.isSelected()) {
+            list = clienteCtrl.listarClientesEstandar();
+        } else if (rbPremium.isSelected()) {
+            list = clienteCtrl.listarClientesPremium();
+        } else {
+            list = clienteCtrl.listarClientes();
+        }
+
+        data.setAll(list);
+    }
+
+    private String tipoCliente(Cliente c) {
+        if (c instanceof ClientePremium) return "Premium";
+        if (c instanceof ClienteEstandar) return "Estandar";
+        return "Desconocido";
     }
 }

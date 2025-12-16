@@ -6,8 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import model.Articulo;
 
 public class ArticuloPane extends VBox {
@@ -31,23 +30,49 @@ public class ArticuloPane extends VBox {
 
         table.setPlaceholder(new Label("No hay artículos para mostrar"));
 
-        // ---- Formulario ----
+        // --- Inputs ---
         tfCodigo.setPromptText("Código (opcional)");
         tfDesc.setPromptText("Descripción");
         tfPrecio.setPromptText("Precio");
         tfEnvio.setPromptText("Gastos envío");
         tfTiempo.setPromptText("Tiempo prep (min)");
 
+        // Que la descripción ocupe más, y el resto se adapten
+        HBox rowInputs = new HBox(10,
+                new Label("Nuevo:"),
+                tfCodigo, tfDesc, tfPrecio, tfEnvio, tfTiempo
+        );
+        rowInputs.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        HBox.setHgrow(tfDesc, Priority.ALWAYS);
+        tfDesc.setMinWidth(260);
+
+        tfCodigo.setPrefWidth(150);
+        tfPrecio.setPrefWidth(120);
+        tfEnvio.setPrefWidth(120);
+        tfTiempo.setPrefWidth(150);
+
+        // --- Botones (fila aparte) ---
         Button btnAdd = new Button("Añadir artículo");
+        btnAdd.getStyleClass().add("primary-button");
         btnAdd.setOnAction(e -> onAdd());
 
-        HBox form = new HBox(8,
-                new Label("Nuevo:"),
-                tfCodigo, tfDesc, tfPrecio, tfEnvio, tfTiempo,
-                btnAdd
-        );
+        Button btnDel = new Button("Eliminar artículo");
+        btnDel.getStyleClass().add("ghost-button");
+        btnDel.setOnAction(e -> onDelete());
 
-        // ---- Tabla ----
+        Button btnClear = new Button("Limpiar");
+        btnClear.getStyleClass().add("ghost-button");
+        btnClear.setOnAction(e -> limpiarFormulario());
+
+        Button btnRefresh = new Button("Refrescar");
+        btnRefresh.getStyleClass().add("ghost-button");
+        btnRefresh.setOnAction(e -> refrescar());
+
+        HBox rowButtons = new HBox(10, btnAdd, btnDel, btnClear, btnRefresh);
+        rowButtons.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        // --- Tabla ---
         TableColumn<Articulo, String> cCod = new TableColumn<>("Código");
         cCod.setCellValueFactory(new PropertyValueFactory<>("codigo"));
 
@@ -80,10 +105,18 @@ public class ArticuloPane extends VBox {
         table.getColumns().setAll(cCod, cDesc, cPrecio, cEnvio, cTiempo);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
-        Button btnRefresh = new Button("Refrescar");
-        btnRefresh.setOnAction(e -> refrescar());
+        // Selección rellena formulario (para borrar rápido)
+        table.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
+            if (sel != null) {
+                tfCodigo.setText(sel.getCodigo());
+                tfDesc.setText(sel.getDescripcion());
+                tfPrecio.setText(String.valueOf(sel.getPrecioVenta()));
+                tfEnvio.setText(String.valueOf(sel.getGastosEnvio()));
+                tfTiempo.setText(String.valueOf(sel.getTiempoPreparacion()));
+            }
+        });
 
-        getChildren().addAll(form, btnRefresh, table);
+        getChildren().addAll(rowInputs, rowButtons, table);
 
         refrescar();
     }
@@ -99,13 +132,8 @@ public class ArticuloPane extends VBox {
 
             articuloCtrl.agregarArticulo(codigo.isEmpty() ? null : codigo, desc, precio, envio, tiempo);
 
-            tfCodigo.clear();
-            tfDesc.clear();
-            tfPrecio.clear();
-            tfEnvio.clear();
-            tfTiempo.clear();
-
             FxMsg.info("OK", "Artículo añadido correctamente.");
+            limpiarFormulario();
             refrescar();
 
         } catch (NumberFormatException ex) {
@@ -113,6 +141,40 @@ public class ArticuloPane extends VBox {
         } catch (Exception ex) {
             FxMsg.error("Error", ex.getMessage());
         }
+    }
+
+    private void onDelete() {
+        try {
+            Articulo sel = table.getSelectionModel().getSelectedItem();
+            String codigo = (sel != null) ? sel.getCodigo() : tfCodigo.getText().trim();
+
+            if (codigo.isEmpty()) {
+                FxMsg.error("Falta código", "Selecciona un artículo o escribe su código para eliminar.");
+                return;
+            }
+
+            if (!FxMsg.confirm("Confirmar", "¿Seguro que quieres eliminar el artículo " + codigo + "?")) {
+                return;
+            }
+
+            articuloCtrl.eliminarArticulo(codigo);
+
+            FxMsg.info("OK", "Artículo eliminado correctamente.");
+            limpiarFormulario();
+            refrescar();
+
+        } catch (Exception ex) {
+            FxMsg.error("Error", ex.getMessage());
+        }
+    }
+
+    private void limpiarFormulario() {
+        tfCodigo.clear();
+        tfDesc.clear();
+        tfPrecio.clear();
+        tfEnvio.clear();
+        tfTiempo.clear();
+        table.getSelectionModel().clearSelection();
     }
 
     private void refrescar() {
