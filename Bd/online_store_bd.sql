@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS online_store_bd;
+USE online_store_bd;
+
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: online_store_bd

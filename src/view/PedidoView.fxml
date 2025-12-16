@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PedidoController">
+   <children>
+      <Label text="Gestión de Pedidos" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+      <HBox spacing="10">
+         <children>
+            <Button text="Añadir Pedido" onAction="#handleAddPedido" />
+            <Button text="Mostrar Pedidos" onAction="#handleShowPedidos" />
+            <Button text="Volver" onAction="#handleBack" />
+         </children>
+      </HBox>
+
+      <TableView fx:id="pedidosTable" VBox.vgrow="ALWAYS">
+         <columns>
+            <TableColumn text="Número" fx:id="numeroColumn" prefWidth="100" />
+            <TableColumn text="Cliente" fx:id="clienteColumn" prefWidth="150" />
+            <TableColumn text="Artículo" fx:id="articuloColumn" prefWidth="150" />
+            <TableColumn text="Cantidad" fx:id="cantidadColumn" prefWidth="80" />
+            <TableColumn text="Fecha/Hora" fx:id="fechaColumn" prefWidth="150" />
+            <TableColumn text="Estado" fx:id="estadoColumn" prefWidth="120" />
+         </columns>
+      </TableView>
+
+      <TextArea fx:id="outputArea" prefRowCount="5" editable="false" VBox.vgrow="NEVER" />
+   </children>
+</VBox>
